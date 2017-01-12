@@ -1,0 +1,20 @@
+Package: nodegen
+Title: Generates a JSON Specification for a NodeRed Node Module
+Version: 0.0.1
+Authors@R: person("Slava", "Nikitin",
+    email = "snikitin@cbuscollaboratory",
+    role = c("aut", "cre"))
+Description: nodegen collects names, arguments, default values and manuals for 
+    all user-facing functions in a package.
+Depends:
+    R (>= 3.3.1)
+Imports:
+    jsonlite (>= 1.2.0),
+    dplyr (>= 0.5.0),
+    magrittr (>= 1.5)
+License: file LICENSE
+Encoding: UTF-8
+LazyData: true
+Suggests:
+    testthat
+RoxygenNote: 5.0.1
