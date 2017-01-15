@@ -35,7 +35,7 @@ test_that(
   {
     res <- get_docs(fun_name, pkg)
     expect_type(res, "list")
-    expect_true(all(grepl("HTML", res)))
+    expect_true(all(grepl("table", res)))
   }
 )
 
@@ -43,6 +43,7 @@ test_that(
   "We can generate JSON holding nodes specification",
   {
     res <- generate_nodes(pkg)
+    attr(res, "set_size") <- NULL
     expect_true(jsonlite::validate(res))
   }
 )

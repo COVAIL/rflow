@@ -16,7 +16,8 @@ generate_nodes <- function(pkg) {
     args = fun_args,
     doc = fun_docs
   ) %>%
-    toJSON(auto_unbox = TRUE)
+    toJSON(auto_unbox = TRUE) %>% 
+    structure(set_size = length(fun_names))
   nodes
 }
 
@@ -27,7 +28,7 @@ generate_nodes <- function(pkg) {
 #' @param path Character scalar giving write location
 #' @return JSON file on disc and return NULL invisibly
 #' @export
-write_nodes <- function(pkg_nodes, file_name, path) {
+write_nodes <- function(pkg_nodes, path, file_name) {
   file_path <- paste(path, file_name, sep = "/")
   con <- file(file_path, "wb", raw = TRUE)
   writeBin(charToRaw(pkg_nodes), con)

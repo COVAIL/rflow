@@ -21,8 +21,8 @@ check_fun <- function(fun_name, pkg, ns) {
 #' @return Character vector holding function names
 #' @importFrom magrittr '%>%'
 get_funs <- function(pkg) {
-  ns <- asNamespace(pkg)
-  fun_name <- ls(ns)
+  ns <- getNamespace(pkg)
+  fun_name <- getNamespaceExports(ns)
   tests <- fun_name %>% 
     lapply(check_fun, pkg, ns) %>% 
     unlist
@@ -40,7 +40,7 @@ get_funs <- function(pkg) {
 #' @importFrom stats setNames
 #' @importFrom utils capture.output
 get_args <- function(fun_name, pkg) {
-  asNamespace(pkg) %>%
+  getNamespace(pkg) %>%
     mget(fun_name, .) %>%
     lapply(function(fun) {
       formals(fun) %>% 
@@ -63,15 +63,20 @@ get_args <- function(fun_name, pkg) {
 #' @description For a user-facing function in some package, retrieve its manual
 #'   and convert it into html format
 #' @inheritParams check_fun
-#' @return List of html formatted manuals of user-facing functions 
+#' @return List of html formatted manuals of user-facing functions
+#' @importFrom xml2 read_html xml_find_first xml_children 
 get_docs <- function(fun_name, pkg) {
   lapply(fun_name, function(fun) {
     help_loc <- eval(substitute(help(fun, pkg), list(pkg = pkg)))
     capture.output(
       help_loc %>% 
         utils:::.getHelpFile() %>% 
-        tools::Rd2HTML()
-    ) %>% 
+        tools::Rd2HTML() 
+      ) %>%
+      paste(collapse = "\n") %>% 
+      read_html() %>% 
+      xml_find_first("body") %>% 
+      xml_children() %>% 
       paste(collapse = "\n")
     }
   )
