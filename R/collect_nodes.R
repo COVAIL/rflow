@@ -44,16 +44,15 @@ get_args <- function(fun_name, pkg) {
     mget(fun_name, .) %>%
     lapply(function(fun) {
       formals(fun) %>% 
-        as.list(all.names = TRUE) %>% 
-        lapply(
-          function(x) {
-            if (is.symbol(x) || is.call(x) || is.null(x))
-              return(tolower(deparse(x)))
-            else 
-              x
-          }
+        lapply(deparse
+          # function(x) {
+          #   if (is.symbol(x) || is.call(x) || is.null(x))
+          #     return(deparse(x))
+          #   else 
+          #     x
+          # }
         ) %>% 
-        data_frame(name = names(.), defaultValue = .)
+        data_frame(name = names(.), defaultValue = .) #[nchar(.) > 0]
     }
     ) %>% 
     setNames(NULL)

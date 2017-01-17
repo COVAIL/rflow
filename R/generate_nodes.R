@@ -15,7 +15,7 @@ generate_nodes <- function(pkg) {
     category = category,
     args = fun_args,
     doc = fun_docs
-  ) %>%
+    ) %>%
     toJSON(auto_unbox = TRUE) %>% 
     structure(set_size = length(fun_names))
   nodes
