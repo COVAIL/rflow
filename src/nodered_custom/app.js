@@ -13,7 +13,7 @@ var server = http.createServer(app);
 
 // Create the settings object - see default settings.js file for other options
 var settings = {
-    httpAdminRoot:"/red",
+    httpAdminRoot:"/",
     httpNodeRoot: "/api",
     userDir:"./.node-red/",
     flowFile:"./.node-red/flows_vagrant.json",
@@ -29,7 +29,22 @@ app.use(settings.httpAdminRoot,RED.httpAdmin);
 // Serve the http nodes UI from /api
 app.use(settings.httpNodeRoot,RED.httpNode);
 
-server.listen(8000);
+var node_port = process.argv[3] || 1337;
+
+server.listen(node_port);
 
 // Start the runtime
 RED.start();
+
+
+var net = require('net');
+
+var server = net.createServer(function(socket) {
+  socket.write("Hello, I am the RFlow TCP Server.")
+	socket.on('data', function(data){
+    console.log('Received Data:' + data);
+    console.log(RED);
+  });
+});
+var comm_port = process.argv[2] || 1338;
+server.listen(comm_port, '127.0.0.1');
