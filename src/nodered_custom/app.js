@@ -15,8 +15,8 @@ var server = http.createServer(app);
 var settings = {
     httpAdminRoot:"/red",
     httpNodeRoot: "/api",
-    userDir:"/home/vagrant/.node-red/",
-    flowFile:"/home/vagrant/.node-red/flows_vagrant.json",
+    userDir:"./.node-red/",
+    flowFile:"./.node-red/flows_vagrant.json",
     functionGlobalContext: { }    // enables global context
 };
 
