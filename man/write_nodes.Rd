@@ -4,14 +4,14 @@
 \alias{write_nodes}
 \title{Save a JSON Representation of User-facing Functions to Disk}
 \usage{
-write_nodes(pkg_nodes, file_name, path)
+write_nodes(pkg_nodes, path, file_name)
 }
 \arguments{
 \item{pkg_nodes}{Character scalar holding JSON representation of nodes}
 
-\item{file_name}{Character scalar in name.json format}
-
 \item{path}{Character scalar giving write location}
+
+\item{file_name}{Character scalar in name.json format}
 }
 \value{
 JSON file on disc and return NULL invisibly

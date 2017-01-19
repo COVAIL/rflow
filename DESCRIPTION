@@ -12,8 +12,11 @@ Imports:
     jsonlite (>= 1.2.0),
     dplyr (>= 0.5.0),
     magrittr (>= 1.5),
-    xml2 (>= 1.1.0)
-SystemRequirements: libxml2: libxml2-dev (deb), libxml2-devel (rpm)
+    xml2 (>= 1.1.0),
+    rstudioapi (>= 0.6)
+SystemRequirements: 
+  libxml2: libxml2-dev (deb), libxml2-devel (rpm),
+  rstudio
 License: file LICENSE
 Encoding: UTF-8
 LazyData: true
