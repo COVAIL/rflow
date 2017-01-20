@@ -11,7 +11,7 @@ var tcp_server = net.createServer(function(socket) {
     console.log(RED);
   });
 });
-var comm_port = process.argv[3] || 1338;
+var comm_port = process.argv[2] || 1338;
 tcp_server.listen(comm_port, '127.0.0.1');
 
 // Create an Express app
@@ -41,7 +41,7 @@ app.use(settings.httpAdminRoot,RED.httpAdmin);
 // Serve the http nodes UI from /api
 app.use(settings.httpNodeRoot,RED.httpNode);
 
-var node_port = process.argv[2] || 1337;
+var node_port = 1337;
 
 server.listen(node_port);
 
