@@ -18,7 +18,7 @@ rflow_start <- function(viewer = TRUE, comm_port = "1338") {
   node_url <- "http://127.0.0.1:1337"
   
   system2(cmd, args, wait = FALSE, stdout = FALSE)
-  Sys.sleep(1)
+  Sys.sleep(3)
   if (viewer) viewer(node_url) else getOption("browser")(node_url)
   con <- socketConnection(host = "127.0.0.1", port = comm_port, open = "r+b")
   invisible(con)
