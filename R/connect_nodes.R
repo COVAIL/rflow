@@ -11,7 +11,9 @@
 #' @export
 rflow_start <- function(viewer = TRUE, comm_port = "1338") {
   cmd <- "node"
-  args <- c("~/Documents/quickInsights/nodegen/src/nodered_custom/rflow.js", comm_port)
+  path <- system.file("src/nodered_custom", package = "nodegen")
+  app <- file.path(path, "rflow.js")
+  args <- c(app, comm_port)
   #if (comm_port != "1338") node_call = paste(node_call, comm_port)
   node_url <- "http://127.0.0.1:1337"
   
