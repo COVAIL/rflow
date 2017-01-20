@@ -13,7 +13,7 @@
      "enabled": true,
      "local": false,
      "module": "node-red",
-     "file": "/Users/snikitin/Documents/quickInsights/nodegen/src/nodered_custom/node_modules/node-red/nodes/core/analysis/72-sentiment.js"
+     "file": "/Users/snikitin/Documents/quickInsights/nodegen/node/nodered_custom/node_modules/node-red/nodes/core/analysis/72-sentiment.js"
     },
     "inject": {
      "name": "inject",
@@ -23,7 +23,7 @@
      "enabled": true,
      "local": false,
      "module": "node-red",
-     "file": "/Users/snikitin/Documents/quickInsights/nodegen/src/nodered_custom/node_modules/node-red/nodes/core/core/20-inject.js"
+     "file": "/Users/snikitin/Documents/quickInsights/nodegen/node/nodered_custom/node_modules/node-red/nodes/core/core/20-inject.js"
     },
     "catch": {
      "name": "catch",
@@ -33,7 +33,7 @@
      "enabled": true,
      "local": false,
      "module": "node-red",
-     "file": "/Users/snikitin/Documents/quickInsights/nodegen/src/nodered_custom/node_modules/node-red/nodes/core/core/25-catch.js"
+     "file": "/Users/snikitin/Documents/quickInsights/nodegen/node/nodered_custom/node_modules/node-red/nodes/core/core/25-catch.js"
     },
     "status": {
      "name": "status",
@@ -43,7 +43,7 @@
      "enabled": true,
      "local": false,
      "module": "node-red",
-     "file": "/Users/snikitin/Documents/quickInsights/nodegen/src/nodered_custom/node_modules/node-red/nodes/core/core/25-status.js"
+     "file": "/Users/snikitin/Documents/quickInsights/nodegen/node/nodered_custom/node_modules/node-red/nodes/core/core/25-status.js"
     },
     "debug": {
      "name": "debug",
@@ -53,7 +53,7 @@
      "enabled": true,
      "local": false,
      "module": "node-red",
-     "file": "/Users/snikitin/Documents/quickInsights/nodegen/src/nodered_custom/node_modules/node-red/nodes/core/core/58-debug.js"
+     "file": "/Users/snikitin/Documents/quickInsights/nodegen/node/nodered_custom/node_modules/node-red/nodes/core/core/58-debug.js"
     },
     "link": {
      "name": "link",
@@ -64,7 +64,7 @@
      "enabled": true,
      "local": false,
      "module": "node-red",
-     "file": "/Users/snikitin/Documents/quickInsights/nodegen/src/nodered_custom/node_modules/node-red/nodes/core/core/60-link.js"
+     "file": "/Users/snikitin/Documents/quickInsights/nodegen/node/nodered_custom/node_modules/node-red/nodes/core/core/60-link.js"
     },
     "exec": {
      "name": "exec",
@@ -74,7 +74,7 @@
      "enabled": true,
      "local": false,
      "module": "node-red",
-     "file": "/Users/snikitin/Documents/quickInsights/nodegen/src/nodered_custom/node_modules/node-red/nodes/core/core/75-exec.js"
+     "file": "/Users/snikitin/Documents/quickInsights/nodegen/node/nodered_custom/node_modules/node-red/nodes/core/core/75-exec.js"
     },
     "function": {
      "name": "function",
@@ -84,7 +84,7 @@
      "enabled": true,
      "local": false,
      "module": "node-red",
-     "file": "/Users/snikitin/Documents/quickInsights/nodegen/src/nodered_custom/node_modules/node-red/nodes/core/core/80-function.js"
+     "file": "/Users/snikitin/Documents/quickInsights/nodegen/node/nodered_custom/node_modules/node-red/nodes/core/core/80-function.js"
     },
     "template": {
      "name": "template",
@@ -94,7 +94,7 @@
      "enabled": true,
      "local": false,
      "module": "node-red",
-     "file": "/Users/snikitin/Documents/quickInsights/nodegen/src/nodered_custom/node_modules/node-red/nodes/core/core/80-template.js"
+     "file": "/Users/snikitin/Documents/quickInsights/nodegen/node/nodered_custom/node_modules/node-red/nodes/core/core/80-template.js"
     },
     "delay": {
      "name": "delay",
@@ -104,7 +104,7 @@
      "enabled": true,
      "local": false,
      "module": "node-red",
-     "file": "/Users/snikitin/Documents/quickInsights/nodegen/src/nodered_custom/node_modules/node-red/nodes/core/core/89-delay.js"
+     "file": "/Users/snikitin/Documents/quickInsights/nodegen/node/nodered_custom/node_modules/node-red/nodes/core/core/89-delay.js"
     },
     "trigger": {
      "name": "trigger",
@@ -114,7 +114,7 @@
      "enabled": true,
      "local": false,
      "module": "node-red",
-     "file": "/Users/snikitin/Documents/quickInsights/nodegen/src/nodered_custom/node_modules/node-red/nodes/core/core/89-trigger.js"
+     "file": "/Users/snikitin/Documents/quickInsights/nodegen/node/nodered_custom/node_modules/node-red/nodes/core/core/89-trigger.js"
     },
     "comment": {
      "name": "comment",
@@ -124,7 +124,7 @@
      "enabled": true,
      "local": false,
      "module": "node-red",
-     "file": "/Users/snikitin/Documents/quickInsights/nodegen/src/nodered_custom/node_modules/node-red/nodes/core/core/90-comment.js"
+     "file": "/Users/snikitin/Documents/quickInsights/nodegen/node/nodered_custom/node_modules/node-red/nodes/core/core/90-comment.js"
     },
     "unknown": {
      "name": "unknown",
@@ -134,7 +134,7 @@
      "enabled": true,
      "local": false,
      "module": "node-red",
-     "file": "/Users/snikitin/Documents/quickInsights/nodegen/src/nodered_custom/node_modules/node-red/nodes/core/core/98-unknown.js"
+     "file": "/Users/snikitin/Documents/quickInsights/nodegen/node/nodered_custom/node_modules/node-red/nodes/core/core/98-unknown.js"
     },
     "rpi-gpio": {
      "name": "rpi-gpio",
@@ -147,7 +147,7 @@
      "enabled": true,
      "local": false,
      "module": "node-red",
-     "file": "/Users/snikitin/Documents/quickInsights/nodegen/src/nodered_custom/node_modules/node-red/nodes/core/hardware/36-rpi-gpio.js"
+     "file": "/Users/snikitin/Documents/quickInsights/nodegen/node/nodered_custom/node_modules/node-red/nodes/core/hardware/36-rpi-gpio.js"
     },
     "tls": {
      "name": "tls",
@@ -157,7 +157,7 @@
      "enabled": true,
      "local": false,
      "module": "node-red",
-     "file": "/Users/snikitin/Documents/quickInsights/nodegen/src/nodered_custom/node_modules/node-red/nodes/core/io/05-tls.js"
+     "file": "/Users/snikitin/Documents/quickInsights/nodegen/node/nodered_custom/node_modules/node-red/nodes/core/io/05-tls.js"
     },
     "mqtt": {
      "name": "mqtt",
@@ -169,7 +169,7 @@
      "enabled": true,
      "local": false,
      "module": "node-red",
-     "file": "/Users/snikitin/Documents/quickInsights/nodegen/src/nodered_custom/node_modules/node-red/nodes/core/io/10-mqtt.js"
+     "file": "/Users/snikitin/Documents/quickInsights/nodegen/node/nodered_custom/node_modules/node-red/nodes/core/io/10-mqtt.js"
     },
     "httpin": {
      "name": "httpin",
@@ -180,7 +180,7 @@
      "enabled": true,
      "local": false,
      "module": "node-red",
-     "file": "/Users/snikitin/Documents/quickInsights/nodegen/src/nodered_custom/node_modules/node-red/nodes/core/io/21-httpin.js"
+     "file": "/Users/snikitin/Documents/quickInsights/nodegen/node/nodered_custom/node_modules/node-red/nodes/core/io/21-httpin.js"
     },
     "httprequest": {
      "name": "httprequest",
@@ -190,7 +190,7 @@
      "enabled": true,
      "local": false,
      "module": "node-red",
-     "file": "/Users/snikitin/Documents/quickInsights/nodegen/src/nodered_custom/node_modules/node-red/nodes/core/io/21-httprequest.js"
+     "file": "/Users/snikitin/Documents/quickInsights/nodegen/node/nodered_custom/node_modules/node-red/nodes/core/io/21-httprequest.js"
     },
     "websocket": {
      "name": "websocket",
@@ -203,7 +203,7 @@
      "enabled": true,
      "local": false,
      "module": "node-red",
-     "file": "/Users/snikitin/Documents/quickInsights/nodegen/src/nodered_custom/node_modules/node-red/nodes/core/io/22-websocket.js"
+     "file": "/Users/snikitin/Documents/quickInsights/nodegen/node/nodered_custom/node_modules/node-red/nodes/core/io/22-websocket.js"
     },
     "watch": {
      "name": "watch",
@@ -213,7 +213,7 @@
      "enabled": true,
      "local": false,
      "module": "node-red",
-     "file": "/Users/snikitin/Documents/quickInsights/nodegen/src/nodered_custom/node_modules/node-red/nodes/core/io/23-watch.js"
+     "file": "/Users/snikitin/Documents/quickInsights/nodegen/node/nodered_custom/node_modules/node-red/nodes/core/io/23-watch.js"
     },
     "tcpin": {
      "name": "tcpin",
@@ -225,7 +225,7 @@
      "enabled": true,
      "local": false,
      "module": "node-red",
-     "file": "/Users/snikitin/Documents/quickInsights/nodegen/src/nodered_custom/node_modules/node-red/nodes/core/io/31-tcpin.js"
+     "file": "/Users/snikitin/Documents/quickInsights/nodegen/node/nodered_custom/node_modules/node-red/nodes/core/io/31-tcpin.js"
     },
     "udp": {
      "name": "udp",
@@ -236,7 +236,7 @@
      "enabled": true,
      "local": false,
      "module": "node-red",
-     "file": "/Users/snikitin/Documents/quickInsights/nodegen/src/nodered_custom/node_modules/node-red/nodes/core/io/32-udp.js"
+     "file": "/Users/snikitin/Documents/quickInsights/nodegen/node/nodered_custom/node_modules/node-red/nodes/core/io/32-udp.js"
     },
     "switch": {
      "name": "switch",
@@ -246,7 +246,7 @@
      "enabled": true,
      "local": false,
      "module": "node-red",
-     "file": "/Users/snikitin/Documents/quickInsights/nodegen/src/nodered_custom/node_modules/node-red/nodes/core/logic/10-switch.js"
+     "file": "/Users/snikitin/Documents/quickInsights/nodegen/node/nodered_custom/node_modules/node-red/nodes/core/logic/10-switch.js"
     },
     "change": {
      "name": "change",
@@ -256,7 +256,7 @@
      "enabled": true,
      "local": false,
      "module": "node-red",
-     "file": "/Users/snikitin/Documents/quickInsights/nodegen/src/nodered_custom/node_modules/node-red/nodes/core/logic/15-change.js"
+     "file": "/Users/snikitin/Documents/quickInsights/nodegen/node/nodered_custom/node_modules/node-red/nodes/core/logic/15-change.js"
     },
     "range": {
      "name": "range",
@@ -266,7 +266,7 @@
      "enabled": true,
      "local": false,
      "module": "node-red",
-     "file": "/Users/snikitin/Documents/quickInsights/nodegen/src/nodered_custom/node_modules/node-red/nodes/core/logic/16-range.js"
+     "file": "/Users/snikitin/Documents/quickInsights/nodegen/node/nodered_custom/node_modules/node-red/nodes/core/logic/16-range.js"
     },
     "split": {
      "name": "split",
@@ -277,7 +277,7 @@
      "enabled": true,
      "local": false,
      "module": "node-red",
-     "file": "/Users/snikitin/Documents/quickInsights/nodegen/src/nodered_custom/node_modules/node-red/nodes/core/logic/17-split.js"
+     "file": "/Users/snikitin/Documents/quickInsights/nodegen/node/nodered_custom/node_modules/node-red/nodes/core/logic/17-split.js"
     },
     "CSV": {
      "name": "CSV",
@@ -287,7 +287,7 @@
      "enabled": true,
      "local": false,
      "module": "node-red",
-     "file": "/Users/snikitin/Documents/quickInsights/nodegen/src/nodered_custom/node_modules/node-red/nodes/core/parsers/70-CSV.js"
+     "file": "/Users/snikitin/Documents/quickInsights/nodegen/node/nodered_custom/node_modules/node-red/nodes/core/parsers/70-CSV.js"
     },
     "HTML": {
      "name": "HTML",
@@ -297,7 +297,7 @@
      "enabled": true,
      "local": false,
      "module": "node-red",
-     "file": "/Users/snikitin/Documents/quickInsights/nodegen/src/nodered_custom/node_modules/node-red/nodes/core/parsers/70-HTML.js"
+     "file": "/Users/snikitin/Documents/quickInsights/nodegen/node/nodered_custom/node_modules/node-red/nodes/core/parsers/70-HTML.js"
     },
     "JSON": {
      "name": "JSON",
@@ -307,7 +307,7 @@
      "enabled": true,
      "local": false,
      "module": "node-red",
-     "file": "/Users/snikitin/Documents/quickInsights/nodegen/src/nodered_custom/node_modules/node-red/nodes/core/parsers/70-JSON.js"
+     "file": "/Users/snikitin/Documents/quickInsights/nodegen/node/nodered_custom/node_modules/node-red/nodes/core/parsers/70-JSON.js"
     },
     "XML": {
      "name": "XML",
@@ -317,7 +317,7 @@
      "enabled": true,
      "local": false,
      "module": "node-red",
-     "file": "/Users/snikitin/Documents/quickInsights/nodegen/src/nodered_custom/node_modules/node-red/nodes/core/parsers/70-XML.js"
+     "file": "/Users/snikitin/Documents/quickInsights/nodegen/node/nodered_custom/node_modules/node-red/nodes/core/parsers/70-XML.js"
     },
     "YAML": {
      "name": "YAML",
@@ -327,7 +327,7 @@
      "enabled": true,
      "local": false,
      "module": "node-red",
-     "file": "/Users/snikitin/Documents/quickInsights/nodegen/src/nodered_custom/node_modules/node-red/nodes/core/parsers/70-YAML.js"
+     "file": "/Users/snikitin/Documents/quickInsights/nodegen/node/nodered_custom/node_modules/node-red/nodes/core/parsers/70-YAML.js"
     },
     "tail": {
      "name": "tail",
@@ -337,7 +337,7 @@
      "enabled": true,
      "local": false,
      "module": "node-red",
-     "file": "/Users/snikitin/Documents/quickInsights/nodegen/src/nodered_custom/node_modules/node-red/nodes/core/storage/28-tail.js"
+     "file": "/Users/snikitin/Documents/quickInsights/nodegen/node/nodered_custom/node_modules/node-red/nodes/core/storage/28-tail.js"
     },
     "file": {
      "name": "file",
@@ -348,7 +348,7 @@
      "enabled": true,
      "local": false,
      "module": "node-red",
-     "file": "/Users/snikitin/Documents/quickInsights/nodegen/src/nodered_custom/node_modules/node-red/nodes/core/storage/50-file.js"
+     "file": "/Users/snikitin/Documents/quickInsights/nodegen/node/nodered_custom/node_modules/node-red/nodes/core/storage/50-file.js"
     }
    }
   },
@@ -366,7 +366,7 @@
      "enabled": true,
      "local": false,
      "module": "node-red-node-email",
-     "file": "/Users/snikitin/Documents/quickInsights/nodegen/src/nodered_custom/node_modules/node-red-node-email/61-email.js"
+     "file": "/Users/snikitin/Documents/quickInsights/nodegen/node/nodered_custom/node_modules/node-red-node-email/61-email.js"
     }
    }
   },
@@ -383,7 +383,7 @@
      "enabled": true,
      "local": false,
      "module": "node-red-node-feedparser",
-     "file": "/Users/snikitin/Documents/quickInsights/nodegen/src/nodered_custom/node_modules/node-red-node-feedparser/32-feedparse.js"
+     "file": "/Users/snikitin/Documents/quickInsights/nodegen/node/nodered_custom/node_modules/node-red-node-feedparser/32-feedparse.js"
     }
    }
   },
@@ -400,7 +400,7 @@
      "enabled": true,
      "local": false,
      "module": "node-red-node-rbe",
-     "file": "/Users/snikitin/Documents/quickInsights/nodegen/src/nodered_custom/node_modules/node-red-node-rbe/rbe.js"
+     "file": "/Users/snikitin/Documents/quickInsights/nodegen/node/nodered_custom/node_modules/node-red-node-rbe/rbe.js"
     }
    }
   },
@@ -418,7 +418,7 @@
      "enabled": true,
      "local": false,
      "module": "node-red-node-sqlite",
-     "file": "/Users/snikitin/Documents/quickInsights/nodegen/src/nodered_custom/node_modules/node-red-node-sqlite/sqlite.js"
+     "file": "/Users/snikitin/Documents/quickInsights/nodegen/node/nodered_custom/node_modules/node-red-node-sqlite/sqlite.js"
     }
    }
   },
@@ -437,7 +437,7 @@
      "enabled": true,
      "local": false,
      "module": "node-red-node-twitter",
-     "file": "/Users/snikitin/Documents/quickInsights/nodegen/src/nodered_custom/node_modules/node-red-node-twitter/27-twitter.js"
+     "file": "/Users/snikitin/Documents/quickInsights/nodegen/node/nodered_custom/node_modules/node-red-node-twitter/27-twitter.js"
     }
    }
   },

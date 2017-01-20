@@ -11,7 +11,7 @@
 #' @export
 rflow_start <- function(viewer = TRUE, comm_port = "1338") {
   cmd <- "node"
-  path <- system.file("src/nodered_custom", package = "nodegen")
+  path <- system.file("node/nodered_custom", package = "nodegen")
   app <- file.path(path, "rflow.js")
   args <- c(app, comm_port)
   #if (comm_port != "1338") node_call = paste(node_call, comm_port)
