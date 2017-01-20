@@ -1,0 +1,1 @@
+{"command":"GENERATE_NODES","genNodesJSON":{"category":"tools-gen","version":"0.0.1","funcs":[{"name":"loadRdMacros","category":"tools-gen","args":[{"name":"file","defaultValue":""},{"name":"macros","defaultValue":"TRUE"}],"doc":"Some documentation here"}]}}
