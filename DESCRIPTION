@@ -15,8 +15,9 @@ Imports:
     xml2 (>= 1.1.0),
     rstudioapi (>= 0.6)
 SystemRequirements: 
-  libxml2: libxml2-dev (deb), libxml2-devel (rpm),
-  rstudio
+    libxml2: libxml2-dev (deb), libxml2-devel (rpm),
+    rstudio (>= 1.0.44),
+    nodejs (>= 5)
 License: file LICENSE
 Encoding: UTF-8
 LazyData: true
