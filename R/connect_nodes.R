@@ -9,16 +9,17 @@
 #' @return Connection object for the communication server 
 #' @importFrom rstudioapi viewer
 #' @export
-rflow_start <- function(viewer = TRUE, node_port = "1337", comm_port = "1338") {
-  node_call <- "node rflow.js"
+rflow_start <- function(viewer = TRUE, comm_port = "1338") {
+  cmd <- "node"
+  args <- c("~/Documents/quickInsights/nodegen/src/nodered_custom/rflow.js", comm_port)
   #if (comm_port != "1338") node_call = paste(node_call, comm_port)
-  node_url <- paste0("http://127.0.0.1:", node_port)
+  node_url <- "http://127.0.0.1:1337"
   
-  system2(node_call, comm_port, wait = FALSE, stdout = FALSE)
+  system2(cmd, args, wait = FALSE, stdout = FALSE)
   if (viewer) viewer(node_url) else getOption("browser")(node_url)
-  
+  Sys.sleep(1)
   con <- socketConnection(host = "127.0.0.1", port = comm_port, open = "r+b")
-  con
+  invisible(con)
 }
 
 #' @title Generate R code from nodes
