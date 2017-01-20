@@ -2,6 +2,18 @@ var http = require('http');
 var express = require("express");
 var RED = require("node-red");
 
+var net = require('net');
+
+var tcp_server = net.createServer(function(socket) {
+  socket.write("Hello, I am the RFlow TCP Server.")
+	socket.on('data', function(data){
+    console.log('Received Data:' + data);
+    console.log(RED);
+  });
+});
+var comm_port = process.argv[2] || 1338;
+tcp_server.listen(comm_port, '127.0.0.1');
+
 // Create an Express app
 var app = express();
 
@@ -35,16 +47,3 @@ server.listen(node_port);
 
 // Start the runtime
 RED.start();
-
-
-var net = require('net');
-
-var server = net.createServer(function(socket) {
-  socket.write("Hello, I am the RFlow TCP Server.")
-	socket.on('data', function(data){
-    console.log('Received Data:' + data);
-    console.log(RED);
-  });
-});
-var comm_port = process.argv[2] || 1338;
-server.listen(comm_port, '127.0.0.1');
