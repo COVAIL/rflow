@@ -3,3 +3,5 @@
 .config.json
 node_modules/
 lib
+flows_vagrant.json
+flows_vagrant_cred.json
