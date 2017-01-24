@@ -1,2 +1,5 @@
 *gen-nodes
 .node-red
+.config.json
+node_modules/
+lib

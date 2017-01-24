@@ -71,10 +71,12 @@ var tcp_server = net.createServer(function(socket) {
                 if(RED.nodes.getModuleInfo(moduleName) != null){
                   //uninstall doesn't work probably because of the userDir up one dir having the node_modules.
                   RED.nodes.uninstallModule(moduleName).then(
+                    function(){
                       createNodes(recv.genNodesJSON, function(){
                         RED.nodes.installModule(modulePath);
                         writeComm('Installed Module:'+modulePath);
                       })
+                    }
                   )
                 } else {
                   createNodes(recv.genNodesJSON, function(){
@@ -131,8 +133,8 @@ var server = http.createServer(app);
 var settings = {
     httpAdminRoot:"/",
     httpNodeRoot: "/api",
-    userDir:"./.node-red/",
-    flowFile:"./.node-red/flows_vagrant.json",
+    userDir:"./",
+    flowFile:"./flows_vagrant.json",
     functionGlobalContext: { }    // enables global context
 };
 
