@@ -1,6 +1,7 @@
 var fs = require('fs');
 var mkdirp = require('mkdirp');
-var getDirName = require('path').dirname;
+var path = require("path");
+var getDirName = path.dirname;
 var replacePeriod = "JS_XX_JS";
 var replaceId = "JS_id_JS";
 
@@ -63,7 +64,35 @@ var tcp_server = net.createServer(function(socket) {
           case 'GENERATE_NODES':
               writeComm('Received GEN_NODES command.');
               if(recv.genNodesJSON){
-                createNodes(recv.genNodesJSON);
+                var moduleName = recv.genNodesJSON.module;
+                var modulePath = path.join(process.cwd(),moduleName);
+                console.log(RED.nodes.getModuleInfo(moduleName));
+                console.log(process.cwd());
+                if(RED.nodes.getModuleInfo(moduleName) != null){
+                  //uninstall doesn't work probably because of the userDir up one dir having the node_modules.
+                  RED.nodes.uninstallModule(moduleName).then(
+                      createNodes(recv.genNodesJSON, function(){
+                        RED.nodes.installModule(modulePath);
+                        writeComm('Installed Module:'+modulePath);
+                      })
+                  )
+                } else {
+                  createNodes(recv.genNodesJSON, function(){
+                    var modulePath = path.join(process.cwd(),moduleName);
+                    RED.nodes.installModule(modulePath);
+                    writeComm('Installed Module:'+modulePath);
+                  });
+                }
+
+
+                //RED.nodes.uninstallModule('./'+recv.genNodesJSON.module).then(
+//RED.nodes.uninstallModule(moduleAsVar)
+setTimeout(function(){
+
+}, 3000)
+
+
+                //)
                 writeComm('Generated new NodeRed Nodes in Directory');
               } else {
                 writeComm('Please provide a genNodesJSON in the JSON message');
@@ -125,7 +154,7 @@ server.listen(node_port);
 
 
 
-function createNodes(functionPackage){
+function createNodes(functionPackage, callback){
 
   function writeFile(path, contents, cb) {
     mkdirp(getDirName(path), function (err) {
@@ -135,16 +164,16 @@ function createNodes(functionPackage){
     });
   }
 
-  var nodesDir = "./"+functionPackage.category+"-nodes";
+  var nodesDir = "./"+functionPackage.module;
 
-/*
+
   functionPackage.funcs.forEach(function(func){
     writeFile(nodesDir+"/"+func.category+"/"+func.category+"-"+RtoJS(func.name)+".html", getNodeHTMLTemplate(func));
     writeFile(nodesDir+"/"+func.category+"/"+func.category+"-"+RtoJS(func.name)+".js", getNodeJSTemplate(func));
   });
-*/
-var htmlOutput = "";
-var jsOutput = "";
+  /*
+  var htmlOutput = "";
+  var jsOutput = "";
   functionPackage.funcs.forEach(function(func){
     htmlOutput += getNodeHTMLTemplate(func) + '\n\n\n';
     jsOutput += getNodeJSTemplate(func) + '\n\n\n';
@@ -152,7 +181,13 @@ var jsOutput = "";
 
   writeFile(nodesDir+"/"+functionPackage.category+".html", htmlOutput);
   writeFile(nodesDir+"/"+functionPackage.category+".js", jsOutput);
-  writeFile(nodesDir+"/"+"package.json", getNodePackageJSON(functionPackage));
+  */
+  writeFile(nodesDir+"/"+"package.json", getNodePackageJSON(functionPackage), function(){
+    if(callback){
+      callback();
+    }
+  });
+
 }
 
 function getNodeHTMLTemplate(f){
@@ -392,16 +427,18 @@ function getNodePackageJSON(functionPackage){
     "node-red": {
       "nodes": {
         `
-        /*
+        //      /*
         functionPackage.funcs.forEach(function(func, idx){
           if(idx > 0){
             output += ',';
           }
           output += `\"`+func.category+`-`+RtoJS(func.name)+`\":\"`+func.category+`/`+func.category+`-`+RtoJS(func.name)+`.js\"\n`
         });
-        */
+        //      */
+        /*
         output += `\"`+functionPackage.category+`\":\"`+functionPackage.category+`.js\"\n`
-  output += `
+        */
+    output += `
       }
     },
     "optionalDependencies": {},
