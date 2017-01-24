@@ -41,7 +41,7 @@ var tcp_server = net.createServer(function(socket) {
     writeComm('ERROR::'+data);
   });
 	socket.on('data', function(data){
-    console.log('RECEIVED DATA::' + data);
+    console.log('RECEIVED DATA::' + data.toString());
     if(typeof data == 'object'){
       var recv = JSON.parse(data.toString());
       switch(recv.command) {
@@ -63,31 +63,29 @@ var tcp_server = net.createServer(function(socket) {
               break;
           case 'GENERATE_NODES':
               writeComm('Received GEN_NODES command.');
-              if(recv.genNodesJSON){
-                var moduleName = recv.genNodesJSON.module;
+              if(recv.module){
+                var moduleName = recv.module.name;
                 var modulePath = path.join(process.cwd(),moduleName);
                 console.log(RED.nodes.getModuleInfo(moduleName));
-                console.log(process.cwd());
                 if(RED.nodes.getModuleInfo(moduleName) != null){
                   //uninstall doesn't work probably because of the userDir up one dir having the node_modules.
                   RED.nodes.uninstallModule(moduleName).then(
                     function(){
-                      createNodes(recv.genNodesJSON, function(){
+                      createNodes(recv.module, function(){
                         RED.nodes.installModule(modulePath);
                         writeComm('Installed Module:'+modulePath);
                       })
                     }
                   )
                 } else {
-                  createNodes(recv.genNodesJSON, function(){
-                    var modulePath = path.join(process.cwd(),moduleName);
+                  createNodes(recv.module, function(){
                     RED.nodes.installModule(modulePath);
                     writeComm('Installed Module:'+modulePath);
                   });
                 }
 
 
-                //RED.nodes.uninstallModule('./'+recv.genNodesJSON.module).then(
+                //RED.nodes.uninstallModule('./'+recv.module.module).then(
 //RED.nodes.uninstallModule(moduleAsVar)
 setTimeout(function(){
 
@@ -97,7 +95,7 @@ setTimeout(function(){
                 //)
                 writeComm('Generated new NodeRed Nodes in Directory');
               } else {
-                writeComm('Please provide a genNodesJSON in the JSON message');
+                writeComm('Please provide a module JSON object in the JSON message');
               }
               break;
           default:
@@ -114,7 +112,6 @@ tcp_server.listen(comm_port, '127.0.0.1');
 
 function writeComm(comm_text){
   if(comm_socket){
-    console.log('SENDING DATA::')
     comm_socket.write(comm_text);
   }
 }
@@ -166,10 +163,10 @@ function createNodes(functionPackage, callback){
     });
   }
 
-  var nodesDir = "./"+functionPackage.module;
+  var nodesDir = "./"+functionPackage.name;
 
 
-  functionPackage.funcs.forEach(function(func){
+  functionPackage.nodes.forEach(function(func){
     writeFile(nodesDir+"/"+func.category+"/"+func.category+"-"+RtoJS(func.name)+".html", getNodeHTMLTemplate(func));
     writeFile(nodesDir+"/"+func.category+"/"+func.category+"-"+RtoJS(func.name)+".js", getNodeJSTemplate(func));
   });
@@ -184,7 +181,8 @@ function createNodes(functionPackage, callback){
   writeFile(nodesDir+"/"+functionPackage.category+".html", htmlOutput);
   writeFile(nodesDir+"/"+functionPackage.category+".js", jsOutput);
   */
-  writeFile(nodesDir+"/"+"package.json", getNodePackageJSON(functionPackage), function(){
+  var packageJSON = getNodePackageJSON(functionPackage);
+  writeFile(nodesDir+"/"+"package.json", packageJSON , function(){
     if(callback){
       callback();
     }
@@ -379,7 +377,6 @@ function getNodeJSTemplate(f){
           RED.nodes.createNode(this,config);
           var node = this;
           node.name = config.name;
-          console.log('show config.payload:'+config.payload);
           if(config.payload == ""){
             node.payload = {
               "R_Function":true,
@@ -425,18 +422,16 @@ function getNodePackageJSON(functionPackage){
     "dependencies": {},
     "description": \"`+functionPackage.description+`\",
     "devDependencies": {},
-    "name": "cbuscollab-`+functionPackage.category+`-nodes",
+    "name": "`+functionPackage.name+`",
     "node-red": {
       "nodes": {
         `
-        //      /*
-        functionPackage.funcs.forEach(function(func, idx){
+        functionPackage.nodes.forEach(function(func, idx){
           if(idx > 0){
             output += ',';
           }
           output += `\"`+func.category+`-`+RtoJS(func.name)+`\":\"`+func.category+`/`+func.category+`-`+RtoJS(func.name)+`.js\"\n`
         });
-        //      */
         /*
         output += `\"`+functionPackage.category+`\":\"`+functionPackage.category+`.js\"\n`
         */
