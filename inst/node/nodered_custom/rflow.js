@@ -43,7 +43,7 @@ var tcp_server = net.createServer(function(socket) {
 	socket.on('data', function(data){
     console.log('RECEIVED DATA::' + data.toString());
     if(typeof data == 'object'){
-      var recv = JSON.parse(data.toString());
+      var recv = JSON.parse(data.toString().trim());
       switch(recv.command) {
           case 'START_NODERED':
               // Start the nodered runtime

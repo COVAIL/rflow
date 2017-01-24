@@ -76,7 +76,8 @@ get_docs <- function(fun_name, pkg) {
       read_html() %>% 
       xml_find_first("body") %>% 
       xml_children() %>% 
-      paste(collapse = "\n")
+      paste(collapse = "\n") %>% 
+      deparse
     }
   )
 }

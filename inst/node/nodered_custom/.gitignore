@@ -1,4 +1,4 @@
-*gen-nodes
+rflow-tools-gen-nodes/
 .node-red
 .config.json
 node_modules/

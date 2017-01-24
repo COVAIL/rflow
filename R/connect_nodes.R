@@ -18,23 +18,34 @@ rflow_start <- function(viewer = TRUE, comm_port = "1338") {
   node_url <- "http://127.0.0.1:1337"
   
   system2(cmd, args, wait = FALSE, stdout = FALSE)
-  Sys.sleep(3)
-  if (viewer) viewer(node_url) else getOption("browser")(node_url)
+  Sys.sleep(.5)
   con <- socketConnection(host = "127.0.0.1", port = comm_port, open = "r+b")
+  start_cmd <- '{"command" : "START_NODERED"}'
+  writeBin(charToRaw(start_cmd), con)
+  start_time <- Sys.time()
+  wait <- TRUE
+  while (wait) {
+    con_status <- rawToChar(readBin(con, raw(), 1e3))
+    if (con_status == "LOADED_NODERED") break
+    if (as.double(Sys.time() - start_time) > 10) 
+      return(message("Unable to start NodeRed"))
+  }
+  if (viewer) viewer(node_url) else getOption("browser")(node_url)
+  
   invisible(con)
 }
 
-#' @title Generate R code from nodes
-#' @description Takes a connection to the node app and inserts R code corresponding to nodes
-#' @param con Connection object for the communication server 
-#' @return Character scalar holding the generated code
-#' @importFrom rstudioapi insertText
+#' @title JSON Writer
+#' @description Send a JSON Representation of User-facing Functions to the NodeRed App
+#' @param pkg_nodes Character scalar holding JSON representation of nodes
+#' @param con Connection object point to node application's tcp server
+#' @return NULL invisibly
 #' @export
-generate_code <- function(con) {
-  code <- readLines(con)
-  code <- paste(code, collapse = "\n")
-  insertText(Inf, code)
+send_nodes <- function(tcp_msg, con) {
+  writeBin(charToRaw(tcp_msg), con)
+  invisible(NULL)
 }
+
 
 #' @title End RFlow
 #' @description Shuts down node-red environment, communication server and
@@ -43,8 +54,8 @@ generate_code <- function(con) {
 #' @return NULL returned invisibly
 #' @export
 rflow_end <- function(con) {
-  msg <- "end app"
-  writeChar(msg, con, nchar(msg))
+  end_cmd <- '{"command" : "STOP_RFLOW"}'
+  writeBin(charToRaw(end_cmd), con)
   close(con)
   invisible(NULL)
 }

@@ -8,30 +8,37 @@ generate_nodes <- function(pkg) {
   fun_names <- get_funs(pkg)
   fun_args <- get_args(fun_names, pkg)
   fun_docs <- get_docs(fun_names, pkg)
-  category <- paste(pkg, "gen", sep = "-")
   
-  nodes <- data_frame(
-    name = fun_names,
-    category = category,
-    args = fun_args,
-    doc = fun_docs
+  #set_name <- paste("node-set", pkg, sep = "-")
+  module_name <- paste("rflow", pkg, "gen", "nodes", sep = "-")
+  
+  tcp_msg <- list(
+    command = "GENERATE_NODES",
+    module = list(
+      name = module_name,
+      version = as.character(packageVersion(pkg)),
+      nodes = data_frame(
+        name = fun_names,
+        args = fun_args,
+        #doc = fun_docs,
+        category = pkg
+      )
+    )
     ) %>%
-    toJSON(auto_unbox = TRUE) %>% 
-    structure(set_size = length(fun_names))
-  nodes
+    toJSON(auto_unbox = TRUE) #%>% 
+    #structure(set_size = length(fun_names))
+  tcp_msg
 }
 
-#' @title Save a JSON Representation of User-facing Functions to Disk
-#' @description Writes node specification to disk
-#' @param pkg_nodes Character scalar holding JSON representation of nodes
-#' @param file_name Character scalar in name.json format
-#' @param path Character scalar giving write location
-#' @return JSON file on disc and return NULL invisibly
+
+#' @title Generate R code from nodes
+#' @description Takes a connection to the node app and inserts R code corresponding to nodes
+#' @param con Connection object for the communication server 
+#' @return Character scalar holding the generated code
+#' @importFrom rstudioapi insertText
 #' @export
-write_nodes <- function(pkg_nodes, path, file_name) {
-  file_path <- paste(path, file_name, sep = "/")
-  con <- file(file_path, "wb", raw = TRUE)
-  writeBin(charToRaw(pkg_nodes), con)
-  close(con)
-  invisible(NULL)
+generate_code <- function(con) {
+  code <- readLines(con)
+  code <- paste(code, collapse = "\n")
+  insertText(Inf, code)
 }
