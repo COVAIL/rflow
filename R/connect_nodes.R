@@ -10,8 +10,10 @@
 #' @importFrom rstudioapi viewer
 #' @export
 rflow_start <- function(viewer = TRUE, comm_port = "1338") {
-  cmd <- "node"
+  cwd <- getwd()
   path <- system.file("node/nodered_custom", package = "nodegen")
+  setwd(path)
+  cmd <- "node"
   app <- file.path(path, "rflow.js")
   args <- c(app, comm_port)
   #if (comm_port != "1338") node_call = paste(node_call, comm_port)
@@ -31,8 +33,8 @@ rflow_start <- function(viewer = TRUE, comm_port = "1338") {
       return(message("Unable to start NodeRed"))
   }
   if (viewer) viewer(node_url) else getOption("browser")(node_url)
-  
-  invisible(con)
+  setwd(cwd)
+  con
 }
 
 #' @title JSON Writer
@@ -44,6 +46,16 @@ rflow_start <- function(viewer = TRUE, comm_port = "1338") {
 send_nodes <- function(tcp_msg, con) {
   writeBin(charToRaw(tcp_msg), con)
   invisible(NULL)
+}
+
+#' @title JSON Reader
+#' @description Receive a JSON Representation of Generated Functions from the NodeRed App
+#' @param con Connection object point to node application's tcp server
+#' @return Character scalar holding a message in JSON format
+#' @export
+receive_nodes <- function(con) {
+  tcp_msg <- rawToChar(readBin(con, raw(), 1e5))
+  tcp_msg
 }
 
 

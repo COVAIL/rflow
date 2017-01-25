@@ -83,4 +83,15 @@ get_docs <- function(fun_name, pkg) {
 }
 
 
+#' @title Build Function Signature
+#' @description Takes function name and argument names and values to build a signature
+#' @param func_name Character scalar giving function name
+#' @param fun_args Data frame holding names and values of arguments
+#' @return Character scalar representing a function signature
+get_signature <- function(func_name, func_args) {
+  c(as.name(func_name), setNames(as.list(func_args$value), func_args$name)) %>% 
+    as.call %>% 
+    deparse
+}
+
 

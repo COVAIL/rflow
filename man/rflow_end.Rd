@@ -6,9 +6,6 @@
 \usage{
 rflow_end(con)
 }
-\arguments{
-\item{con}{Connection object for the communication server}
-}
 \value{
 NULL returned invisibly
 }

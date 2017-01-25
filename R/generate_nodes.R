@@ -11,12 +11,16 @@ generate_nodes <- function(pkg) {
   
   #set_name <- paste("node-set", pkg, sep = "-")
   module_name <- paste("rflow", pkg, "gen", "nodes", sep = "-")
-  
+  pkg_version <- unlist(packageVersion("mlr"))
   tcp_msg <- list(
     command = "GENERATE_NODES",
     module = list(
       name = module_name,
-      version = as.character(packageVersion(pkg)),
+      version = ifelse(
+        length(pkg_version) == 2,
+        paste(c(pkg_version, "0"), collapse = "."),
+        paste(pkg_version, collapse = ".")
+      ),
       nodes = data_frame(
         name = fun_names,
         args = fun_args,
@@ -33,12 +37,26 @@ generate_nodes <- function(pkg) {
 
 #' @title Generate R code from nodes
 #' @description Takes a connection to the node app and inserts R code corresponding to nodes
-#' @param con Connection object for the communication server 
+#' @param tcp_msg Character scalar holding a message from the tcp server in JSON format
 #' @return Character scalar holding the generated code
 #' @importFrom rstudioapi insertText
 #' @export
-generate_code <- function(con) {
-  code <- readLines(con)
-  code <- paste(code, collapse = "\n")
+generate_code <- function(funcs) {
+  #funcs <- fromJSON(tcp_msg)$funcs
+  signatures <- mapply(
+    get_signature,
+    funcs$name,
+    funcs$args,
+    USE.NAMES = FALSE
+  )
+  calls <- sprintf(
+    "%s <- %s\n",
+    funcs$outputVar,
+    signatures
+  )
+  code <- paste(calls, collapse = "")
+  
   insertText(Inf, code)
 }
+
+generate_code(json$funcs)
