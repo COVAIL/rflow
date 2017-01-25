@@ -86,10 +86,8 @@ var tcp_server = net.createServer(function(socket) {
 
 
                 //RED.nodes.uninstallModule('./'+recv.module.module).then(
-//RED.nodes.uninstallModule(moduleAsVar)
-setTimeout(function(){
+                //RED.nodes.uninstallModule(moduleAsVar)
 
-}, 3000)
 
 
                 //)
@@ -107,6 +105,8 @@ setTimeout(function(){
     }
   });
 });
+
+
 var comm_port = process.argv[2] || 1338;
 tcp_server.listen(comm_port, '127.0.0.1');
 
@@ -156,7 +156,14 @@ server.listen(node_port);
 function createNodes(functionPackage, callback){
 
   function writeFile(path, contents, cb) {
+
     mkdirp(getDirName(path), function (err) {
+
+      //Need to define callbak if not defined;
+      //(node:20213) DeprecationWarning: Calling an asynchronous function without callback is deprecated.
+      if(!cb){
+        cb = function(){}
+      }
       if (err) return cb(err);
 
       fs.writeFile(path, contents, cb);
