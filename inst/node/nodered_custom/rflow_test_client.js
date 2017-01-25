@@ -1,7 +1,7 @@
 /* Or use this example tcp client written in node.js.  (Originated with
 example code from
 http://www.hacksparrow.com/tcp-socket-programming-in-node-js.html.) */
-
+var fs = require('fs');
 var net = require('net');
 
 var client = new net.Socket();
@@ -20,21 +20,21 @@ client.on('close', function() {
 	console.log('Connection closed');
 });
 
-/*
-setTimeout(function(){
-  var stop = {};
-  stop.command = 'STOP_RFLOW';
-  client.write(JSON.stringify(stop));
-}, 4000);
-*/
-
 process.stdin.on('data', function (chunk) {
-  console.log(chunk);
+
   var sendCommand = {};
   if(chunk.indexOf('{') < 0){
-    sendCommand.command = chunk.toString().trim();
+		if(chunk.indexOf('file://') >=0){
+			chunk = chunk.toString().substring(('file://').length);
+			chunk = fs.readFileSync(chunk.toString().trim(), 'utf8');
+			sendCommand = JSON.parse(chunk.toString());
+		} else {
+    	sendCommand.command = chunk.toString().trim();
+		}
   } else {
     sendCommand = JSON.parse(chunk.toString());
   }
-  client.write(JSON.stringify(sendCommand));
+	var str = JSON.stringify(sendCommand);
+	console.log("SEND LENGTH:"+str.length);
+  client.write(str);
 });

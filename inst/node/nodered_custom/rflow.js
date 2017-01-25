@@ -34,6 +34,7 @@ var comm_socket;
 
 
 var tcp_server = net.createServer(function(socket) {
+  var msg = '';
   comm_socket = socket;
   socket.write("Hello, I am the RFlow TCP Server.")
   socket.on('error', function(data){
@@ -41,67 +42,64 @@ var tcp_server = net.createServer(function(socket) {
     writeComm('ERROR::'+data);
   });
 	socket.on('data', function(data){
-    console.log('RECEIVED DATA::' + data.toString());
+
     if(typeof data == 'object'){
-      var recv = JSON.parse(data.toString().trim());
-      switch(recv.command) {
-          case 'START_NODERED':
-              // Start the nodered runtime
-              RED.start().then(
-                function(){
-                  writeComm('LOADED_NODERED');
-                }
-              );
-              break;
-          case 'STOP_RFLOW':
-              writeComm('Received STOP_RFLOW command.  Good Bye!');
-              process.exit();
-              break;
-          case 'RUN_FLOWS':
-              writeComm('Received RUN_FLOWS command.');
-              writeComm(' sorry I dont have anything to do yet, not implemented');
-              break;
-          case 'GENERATE_NODES':
-              writeComm('Received GEN_NODES command.');
-              if(recv.module){
-                var moduleName = recv.module.name;
-                var modulePath = path.join(process.cwd(),moduleName);
-                console.log(RED.nodes.getModuleInfo(moduleName));
-                if(RED.nodes.getModuleInfo(moduleName) != null){
-                  //uninstall doesn't work probably because of the userDir up one dir having the node_modules.
-                  RED.nodes.uninstallModule(moduleName).then(
+      try{
+          var recv = JSON.parse(data.toString().trim());
+          switch(recv.command) {
+              case 'START_NODERED':
+                  // Start the nodered runtime
+                  RED.start().then(
                     function(){
+                      writeComm('LOADED_NODERED');
+                    }
+                  );
+                  break;
+              case 'STOP_RFLOW':
+                  writeComm('Received STOP_RFLOW command.  Good Bye!');
+                  process.exit();
+                  break;
+              case 'RUN_FLOWS':
+                  writeComm('Received RUN_FLOWS command.');
+                  writeComm(' sorry I dont have anything to do yet, not implemented');
+                  break;
+              case 'GENERATE_NODES':
+                  writeComm('Received GEN_NODES command.');
+                  if(recv.module){
+                    var moduleName = recv.module.name;
+                    var modulePath = path.join(process.cwd(),moduleName);
+                    if(RED.nodes.getModuleInfo(moduleName) != null){
+                      //uninstall doesn't work probably because of the userDir up one dir having the node_modules.
+                      RED.nodes.uninstallModule(moduleName).then(
+                        function(){
+                          createNodes(recv.module, function(){
+                            RED.nodes.installModule(modulePath);
+                            writeComm('Installed Module:'+modulePath);
+                          })
+                        }
+                      )
+                    } else {
                       createNodes(recv.module, function(){
                         RED.nodes.installModule(modulePath);
                         writeComm('Installed Module:'+modulePath);
-                      })
+                      });
                     }
-                  )
-                } else {
-                  createNodes(recv.module, function(){
-                    RED.nodes.installModule(modulePath);
-                    writeComm('Installed Module:'+modulePath);
-                  });
-                }
-
-
-                //RED.nodes.uninstallModule('./'+recv.module.module).then(
-                //RED.nodes.uninstallModule(moduleAsVar)
-
-
-
-                //)
-                writeComm('Generated new NodeRed Nodes in Directory');
-              } else {
-                writeComm('Please provide a module JSON object in the JSON message');
-              }
-              break;
-          default:
-             writeComm("Don't know what to do with this command, "+recv.commadn);
+                    writeComm('Generated new NodeRed Nodes in Directory');
+                  } else {
+                    writeComm('Please provide a module JSON object in the JSON message');
+                  }
+                  break;
+              default:
+                 console.log('DEFAULT switch');
+                 writeComm("Don't know what to do with this command, "+recv.commadn);
+            }
+      }catch(ex){
+        console.log("ERROR:::");
+        console.log(ex.toString());
       }
     } else {
+      console.log('no JSON object');
       writeComm("Please send a JSON Object, and command");
-      return;
     }
   });
 });
