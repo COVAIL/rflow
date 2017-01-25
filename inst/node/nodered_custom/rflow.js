@@ -5,6 +5,8 @@ var getDirName = path.dirname;
 var replacePeriod = "JS_XX_JS";
 var replaceId = "JS_id_JS";
 
+var events = require("./node_modules/node-red/red/runtime/events");
+
 function RtoJS(argName){
   var JSname = argName;
   if(argName == 'id'){
@@ -63,6 +65,14 @@ var tcp_server = net.createServer(function(socket) {
                   writeComm('Received RUN_FLOWS command.');
                   writeComm(' sorry I dont have anything to do yet, not implemented');
                   break;
+              case 'HELLO_WORLD':
+                  writeComm('hello world');
+                //  console.log(events);
+                  events.on('rstudio-out', function(){
+                      console.log('rstudio out event');
+                      writeComm('you ran a RStudio Out Node');
+                  })
+                  break;
               case 'GENERATE_NODES':
                   writeComm('Received GEN_NODES command.');
                   if(recv.module){
@@ -95,7 +105,7 @@ var tcp_server = net.createServer(function(socket) {
             }
       }catch(ex){
         console.log("ERROR:::");
-        console.log(ex.toString());
+        console.log(ex);
       }
     } else {
       console.log('no JSON object');

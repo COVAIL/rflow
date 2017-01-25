@@ -1,0 +1,16 @@
+
+  {
+    "dependencies": {},
+    "description": "Communication Nodes used within RFlow RStudio",
+    "devDependencies": {},
+    "name": "rflow-rstudio-nodes",
+    "node-red": {
+      "nodes": {
+        "rflow-rstudio":"rflow-rstudio.js"
+      }
+    },
+    "optionalDependencies": {},
+    "readme": "",
+    "readmeFilename": "README.md",
+    "version": "0.0.1"
+  }
