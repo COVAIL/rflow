@@ -4,7 +4,7 @@
 \alias{generate_code}
 \title{Generate R code from nodes}
 \usage{
-generate_code(funcs)
+generate_code(con)
 }
 \arguments{
 \item{tcp_msg}{Character scalar holding a message from the tcp server in JSON format}

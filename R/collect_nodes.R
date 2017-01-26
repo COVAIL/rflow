@@ -8,7 +8,7 @@
 #' @param ns Environment corresponding to package's namespace
 #' @return Logical scalar showing whether an object is a function with certain features
 #'   or not
-check_fun <- function(fun_name, pkg, ns) {
+fun_check <- function(fun_name, pkg, ns) {
   doc <- eval(substitute(help(fun_name, pkg), list(pkg = pkg)))
   fun <- ns[[fun_name]]
   test <- is.function(fun) && !is.null(formals(fun)) && length(doc)
@@ -17,14 +17,14 @@ check_fun <- function(fun_name, pkg, ns) {
 
 #' @title Get Names of User-facing Functions
 #' @description Using user-facing tests, obtain function names from a package namespace
-#' @inheritParams check_fun 
+#' @inheritParams fun_check 
 #' @return Character vector holding function names
 #' @importFrom magrittr '%>%'
-get_funs <- function(pkg) {
+fun_name <- function(pkg) {
   ns <- getNamespace(pkg)
   fun_name <- getNamespaceExports(ns)
   tests <- fun_name %>% 
-    lapply(check_fun, pkg, ns) %>% 
+    lapply(fun_check, pkg, ns) %>% 
     unlist
   fun_name <- fun_name[which(tests)]
   fun_name
@@ -33,13 +33,13 @@ get_funs <- function(pkg) {
 #' @title Get Arguments of User-facing Functions
 #' @description For each user-facing function in a package, obtain argument names
 #'   and default values
-#' @inheritParams check_fun 
+#' @inheritParams fun_check 
 #' @return list of data_frames holding a column of argument names and a column of 
 #'   default values
 #' @importFrom dplyr data_frame
 #' @importFrom stats setNames
 #' @importFrom utils capture.output
-get_args <- function(fun_name, pkg) {
+fun_args <- function(fun_name, pkg) {
   getNamespace(pkg) %>%
     mget(fun_name, .) %>%
     lapply(function(fun) {
@@ -61,10 +61,10 @@ get_args <- function(fun_name, pkg) {
 #' @title Get Documentation for a User-facing Function
 #' @description For a user-facing function in some package, retrieve its manual
 #'   and convert it into html format
-#' @inheritParams check_fun
+#' @inheritParams fun_check
 #' @return List of html formatted manuals of user-facing functions
 #' @importFrom xml2 read_html xml_find_first xml_children 
-get_docs <- function(fun_name, pkg) {
+fun_doc <- function(fun_name, pkg) {
   lapply(fun_name, function(fun) {
     help_loc <- eval(substitute(help(fun, pkg), list(pkg = pkg)))
     capture.output(
@@ -88,7 +88,7 @@ get_docs <- function(fun_name, pkg) {
 #' @param func_name Character scalar giving function name
 #' @param fun_args Data frame holding names and values of arguments
 #' @return Character scalar representing a function signature
-get_signature <- function(func_name, func_args) {
+fun_signature <- function(func_name, func_args) {
   c(as.name(func_name), setNames(as.list(func_args$value), func_args$name)) %>% 
     as.call %>% 
     deparse

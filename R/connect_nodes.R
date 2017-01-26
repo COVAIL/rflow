@@ -22,13 +22,13 @@ rflow_start <- function(viewer = TRUE, comm_port = "1338") {
   system2(cmd, args, wait = FALSE, stdout = FALSE)
   Sys.sleep(.5)
   con <- socketConnection(host = "127.0.0.1", port = comm_port, open = "r+b")
-  start_cmd <- '{"command" : "START_NODERED"}'
-  writeBin(charToRaw(start_cmd), con)
+  json_out <- '{"command" : "START_NODERED"}'
+  writeBin(charToRaw(json_out), con)
   start_time <- Sys.time()
   wait <- TRUE
   while (wait) {
-    con_status <- rawToChar(readBin(con, raw(), 1e3))
-    if (con_status == "LOADED_NODERED") break
+    json_in <- rawToChar(readBin(con, raw(), 1e3))
+    if (json_in == "LOADED_NODERED") break
     if (as.double(Sys.time() - start_time) > 10) 
       return(message("Unable to start NodeRed"))
   }
@@ -42,9 +42,8 @@ rflow_start <- function(viewer = TRUE, comm_port = "1338") {
 #' @param pkg_nodes Character scalar holding JSON representation of nodes
 #' @param con Connection object point to node application's tcp server
 #' @return NULL invisibly
-#' @export
-send_nodes <- function(tcp_msg, con) {
-  writeBin(charToRaw(tcp_msg), con)
+rflow_send <- function(json_out, con) {
+  writeBin(charToRaw(json_out), con)
   invisible(NULL)
 }
 
@@ -52,10 +51,9 @@ send_nodes <- function(tcp_msg, con) {
 #' @description Receive a JSON Representation of Generated Functions from the NodeRed App
 #' @param con Connection object point to node application's tcp server
 #' @return Character scalar holding a message in JSON format
-#' @export
-receive_nodes <- function(con) {
-  tcp_msg <- rawToChar(readBin(con, raw(), 1e5))
-  tcp_msg
+rflow_receive <- function(con) {
+  json_in <- rawToChar(readBin(con, raw(), 1e5))
+  json_in
 }
 
 
@@ -66,8 +64,8 @@ receive_nodes <- function(con) {
 #' @return NULL returned invisibly
 #' @export
 rflow_end <- function(con) {
-  end_cmd <- '{"command" : "STOP_RFLOW"}'
-  writeBin(charToRaw(end_cmd), con)
+  json_out <- '{"command" : "STOP_RFLOW"}'
+  writeBin(charToRaw(json_out), con)
   close(con)
   invisible(NULL)
 }
