@@ -1,11 +1,19 @@
 var fs = require('fs');
 var mkdirp = require('mkdirp');
 var path = require("path");
+var argv = require('yargs').argv;
+
 var getDirName = path.dirname;
 var replacePeriod = "JS_XX_JS";
 var replaceId = "JS_id_JS";
 
-var events = require("./node_modules/node-red/red/runtime/events");
+
+var user_directory = argv.dir || "./";
+var node_port = argv.node_port || 1337;
+var comm_port = argv.comm_port || 1338;
+
+var eventsPath = path.resolve(user_directory, "node_modules/node-red/red/runtime/events");
+var events = require(eventsPath.toString());
 
 function RtoJS(argName){
   var JSname = argName;
@@ -23,8 +31,6 @@ function JStoR(jsArgName){
   argName = jsArgName.split(replacePeriod).join(".");
   return argName;
 }
-
-
 
 var http = require('http');
 var express = require("express");
@@ -73,7 +79,7 @@ var tcp_server = net.createServer(function(socket) {
                   writeComm('Received GEN_NODES command.');
                   if(recv.module){
                     var moduleName = recv.module.name;
-                    var modulePath = path.join(process.cwd(),moduleName);
+                    var modulePath = path.join(user_directory,moduleName);
                     if(RED.nodes.getModuleInfo(moduleName) != null){
                       //uninstall doesn't work probably because of the userDir up one dir having the node_modules.
                       RED.nodes.uninstallModule(moduleName).then(
@@ -111,7 +117,6 @@ var tcp_server = net.createServer(function(socket) {
 });
 
 
-var comm_port = process.argv[2] || 1338;
 tcp_server.listen(comm_port, '127.0.0.1');
 
 function writeComm(comm_text){
@@ -134,8 +139,7 @@ var server = http.createServer(app);
 var settings = {
     httpAdminRoot:"/",
     httpNodeRoot: "/api",
-    userDir:"./",
-    flowFile:"./flows_vagrant.json",
+    userDir:user_directory,
     functionGlobalContext: { }    // enables global context
 };
 
@@ -148,7 +152,7 @@ app.use(settings.httpAdminRoot,RED.httpAdmin);
 // Serve the http nodes UI from /api
 app.use(settings.httpNodeRoot,RED.httpNode);
 
-var node_port = 1337;
+
 
 server.listen(node_port);
 
