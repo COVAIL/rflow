@@ -9,7 +9,7 @@ module.exports = function(RED) {
 
         });
     }
-    RED.nodes.registerType("rstudio-out",RStudioOutNode);
+    RED.nodes.registerType("rstudio out",RStudioOutNode);
 
     function RStudioInNode(config) {
         RED.nodes.createNode(this,config);
@@ -24,5 +24,5 @@ module.exports = function(RED) {
 
         });
     }
-    RED.nodes.registerType("rstudio-in",RStudioInNode);
+    RED.nodes.registerType("rstudio in",RStudioInNode);
 }

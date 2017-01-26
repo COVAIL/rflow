@@ -1,6 +1,6 @@
 <script type="text/javascript">
-    RED.nodes.registerType('rstudio-out',{
-        category: 'rstudio',
+    RED.nodes.registerType('rstudio out',{
+        category: 'output',
         color: '#6bc6ff',
         defaults: {
             name: {value:""}
@@ -9,27 +9,27 @@
         outputs:0,
         icon: "rstudio.png",
         label: function() {
-            return this.name||"rstudio-out";
+            return this.name||"rstudio out";
         }
     });
 </script>
 
-<script type="text/x-red" data-template-name="rstudio-out">
+<script type="text/x-red" data-template-name="rstudio out">
     <div class="form-row">
         <label for="node-input-name"><i class="icon-tag"></i> Name</label>
         <input type="text" id="node-input-name" placeholder="Name">
     </div>
 </script>
 
-<script type="text/x-red" data-help-name="rstudio-out">
+<script type="text/x-red" data-help-name="rstudio out">
     <p>Send R_FunctionCalls to RStudio</p>
 </script>
 
 
 
 <script type="text/javascript">
-    RED.nodes.registerType('rstudio-in',{
-        category: 'rstudio',
+    RED.nodes.registerType('rstudio in',{
+        category: 'input',
         color: '#6bc6ff',
         defaults: {
             name: {value:""}
@@ -38,18 +38,18 @@
         outputs:0,
         icon: "rstudio.png",
         label: function() {
-            return this.name||"rstudio-in";
+            return this.name||"rstudio in";
         }
     });
 </script>
 
-<script type="text/x-red" data-template-name="rstudio-in">
+<script type="text/x-red" data-template-name="rstudio in">
     <div class="form-row">
         <label for="node-input-name"><i class="icon-tag"></i> Name</label>
         <input type="text" id="node-input-name" placeholder="Name">
     </div>
 </script>
 
-<script type="text/x-red" data-help-name="rstudio-out">
+<script type="text/x-red" data-help-name="rstudio out">
     <p>Receive Commands from RStudio</p>
 </script>
