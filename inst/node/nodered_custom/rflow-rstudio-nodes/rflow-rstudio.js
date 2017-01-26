@@ -5,14 +5,7 @@ module.exports = function(RED) {
 
         this.on('input', function(msg) {
           //if R_FunctionCalls
-
-RED.events.emit('rstudio-out');
-          //if Socket to RStudio
-          if(RED.settings.get('rstudio_comm_socket')){
-            RED.settings.get('rstudio_comm_socket').write('INPUT RECEIVED... SENDING OFF');
-          }
-
-
+          RED.events.emit('rstudio-out', msg.R_FunctionCalls);
 
         });
     }

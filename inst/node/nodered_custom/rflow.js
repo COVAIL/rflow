@@ -54,6 +54,10 @@ var tcp_server = net.createServer(function(socket) {
                   RED.start().then(
                     function(){
                       writeComm('LOADED_NODERED');
+                      events.on('rstudio-out', function(msg){
+                          console.log('rstudio out event');
+                          writeComm(JSON.stringify(msg));
+                      })
                     }
                   );
                   break;
@@ -64,14 +68,6 @@ var tcp_server = net.createServer(function(socket) {
               case 'RUN_FLOWS':
                   writeComm('Received RUN_FLOWS command.');
                   writeComm(' sorry I dont have anything to do yet, not implemented');
-                  break;
-              case 'HELLO_WORLD':
-                  writeComm('hello world');
-                //  console.log(events);
-                  events.on('rstudio-out', function(){
-                      console.log('rstudio out event');
-                      writeComm('you ran a RStudio Out Node');
-                  })
                   break;
               case 'GENERATE_NODES':
                   writeComm('Received GEN_NODES command.');
