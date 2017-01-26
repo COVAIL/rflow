@@ -277,7 +277,7 @@ function getNodeHTMLTemplate(f){
     output += "\t\t\t\t"+RtoJS(arg.name)+":{value:\""+((typeof arg.defaultValue == 'string')?arg.defaultValue.split('\"').join('\\\"'):arg.defaultValue)+"\"},\n";
   });
   output += `   outputVar: {value:"`+f.name+`_OUTPUT_VAR"},
-              payload: {value:""},
+              rcode: {value:""},
               outputs: {value:1},
               noerr: {value:0,required:true,validate:function(v){ return ((!v) || (v === 0)) ? true : false; }}
           },
@@ -293,8 +293,8 @@ function getNodeHTMLTemplate(f){
               min:1
           });
 
-          if($('#node-input-payload').val() == ""){
-              $('#node-input-payload').val(makeExpression`+RtoJS(f.name)+`(`
+          if($('#node-input-rcode').val() == ""){
+              $('#node-input-rcode').val(makeExpression`+RtoJS(f.name)+`(`
                 f.args.forEach(function(arg, idx){
                 if(idx > 0){
                 output += ',';
@@ -306,12 +306,12 @@ function getNodeHTMLTemplate(f){
                 output += '));'
 
             output += `
-            $('.form-tips .generated-code').text($('#node-input-payload').val());
-            node.payload = $('#node-input-payload').val();
+            $('.form-tips .generated-code').text($('#node-input-rcode').val());
+            node.rcode = $('#node-input-rcode').val();
           }
 
           $('.arg-input').on('keyup', function(evt){
-            $('#node-input-payload').val(makeExpression`+RtoJS(f.name)+`(`
+            $('#node-input-rcode').val(makeExpression`+RtoJS(f.name)+`(`
   f.args.forEach(function(arg, idx){
     if(idx > 0){
       output += ',';
@@ -323,14 +323,14 @@ function getNodeHTMLTemplate(f){
   output += '));'
 
   output += `
-          $('.form-tips .generated-code').text($('#node-input-payload').val());
-          node.payload = $('#node-input-payload').val();
+          $('.form-tips .generated-code').text($('#node-input-rcode').val());
+          node.rcode = $('#node-input-rcode').val();
         });
 
 
         },
         oneditsave: function() {
-          this.payload = $('#node-input-payload').val();
+          this.rcode = $('#node-input-rcode').val();
         },
         oneditresize: function(size) {
 
@@ -342,7 +342,7 @@ function getNodeHTMLTemplate(f){
         <div class="form-row">
         <label for="node-input-name"><i class="fa fa-tag"></i> <span data-i18n="common.label.name"></span></label>
         <input type="text" id="node-input-name" data-i18n="[placeholder]common.label.name">
-        <input type="hidden" id="node-input-payload" value="">
+        <input type="hidden" id="node-input-rcode" value="">
         </div>
   `
 
@@ -388,10 +388,8 @@ function getNodeJSTemplate(f){
           RED.nodes.createNode(this,config);
           var node = this;
           node.name = config.name;
-          console.log("config.payload:"+config.payload);
-
-          if(config.payload.trim() == ""){
-            node.payload = {
+          if(config.rcode.trim() == ""){
+            jsonPayload = {
               "R_Function":true,
               "name":"`+f.name+`",
               "outputVar":"`+f.name+`_OUTPUT_VAR",
@@ -406,29 +404,46 @@ function getNodeJSTemplate(f){
               });
               output += ` ]};
 
+              node.rcode = JSON.stringify(jsonPayload);
             } else {
-              node.payload = config.payload;
+              node.rcode = config.rcode;
             }
 
           this.on('input', function(msg) {
-            console.log('input. node.payload')
-            console.log(node.payload);
-            console.log(typeof node.payload);
-            if(typeof node.payload == 'string'){
-              if(node.payload.indexOf('{')){
-                node.payload = JSON.parse(node.payload);
+            console.log(1);
+            if(typeof node.rcode == 'string'){
+              console.log(2);
+              if(node.rcode.indexOf('{') >= 0){
+                try{
+                  console.log(3);
+                  jsonPayload = JSON.parse(node.rcode);
+                  console.log(4);
+                  if(typeof jsonPayload.R_Function != "undefined"  && jsonPayload.R_Function){
+                    console.log(5);
+                    var code = jsonPayload;
+                    if(typeof msg.R_FunctionCalls == 'undefined'){
+                      console.log(6);
+                      msg.R_FunctionCalls = {};
+                      msg.R_FunctionCalls.funcs = [];
+                    }
+                    console.log(7);
+                    msg.R_FunctionCalls.funcs.push(code);
+                    node.send(msg);
+                    console.log(8);
+                  } else {
+                    node.error("R_Function is not defined on object?");
+                  }
+                } catch(err) {
+                  node.error("Unable to convert node.rcode to JSON object");
+                  node.error(err)
+                }
+              } else {
+                node.error("Not a JSON string");
               }
+            } else {
+              node.error("node.rcode is not typeof 'string'")
             }
-
-            if(typeof node.payload == 'object' && node.payload.R_Function){
-                        var code = node.payload;
-                        if(typeof msg.R_FunctionCalls == 'undefined'){
-                          msg.R_FunctionCalls = {};
-                          msg.R_FunctionCalls.funcs = [];
-                        }
-                        msg.R_FunctionCalls.funcs.push(code);
-            }
-            node.send(msg);
+            console.log(9);
           });
       }
       RED.nodes.registerType("`+f.category+`-`+RtoJS(f.name)+`",`+RtoJS(f.name)+`Function);
