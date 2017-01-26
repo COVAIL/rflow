@@ -388,10 +388,13 @@ function getNodeJSTemplate(f){
           RED.nodes.createNode(this,config);
           var node = this;
           node.name = config.name;
-          if(config.payload == ""){
+          console.log("config.payload:"+config.payload);
+
+          if(config.payload.trim() == ""){
             node.payload = {
               "R_Function":true,
               "name":"`+f.name+`",
+              "outputVar":"`+f.name+`_OUTPUT_VAR",
               "args":[
                 `
               f.args.forEach(function(arg, idx){
@@ -408,6 +411,15 @@ function getNodeJSTemplate(f){
             }
 
           this.on('input', function(msg) {
+            console.log('input. node.payload')
+            console.log(node.payload);
+            console.log(typeof node.payload);
+            if(typeof node.payload == 'string'){
+              if(node.payload.indexOf('{')){
+                node.payload = JSON.parse(node.payload);
+              }
+            }
+
             if(typeof node.payload == 'object' && node.payload.R_Function){
                         var code = node.payload;
                         if(typeof msg.R_FunctionCalls == 'undefined'){
