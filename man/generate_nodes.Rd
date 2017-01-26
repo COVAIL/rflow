@@ -4,7 +4,7 @@
 \alias{generate_nodes}
 \title{Generate a JSON Representation of User-facing Functions}
 \usage{
-generate_nodes(pkg)
+generate_nodes(pkg, con)
 }
 \arguments{
 \item{pkg}{Character scalar naming a package}

@@ -1,18 +1,18 @@
 #' @title Generate a JSON Representation of User-facing Functions
 #' @description Generates a JSON with function names, arguments, default values, and
 #'   manuals for all user-facing functions in a package
-#' @inheritParams check_fun
+#' @inheritParams fun_check
 #' @importFrom jsonlite toJSON
 #' @export
-generate_nodes <- function(pkg) {
-  fun_names <- get_funs(pkg)
-  fun_args <- get_args(fun_names, pkg)
-  fun_docs <- get_docs(fun_names, pkg)
+generate_nodes <- function(pkg, con) {
+  names <- fun_name(pkg)
+  args <- fun_args(names, pkg)
+  docs <- fun_doc(names, pkg)
   
   #set_name <- paste("node-set", pkg, sep = "-")
   module_name <- paste("rflow", pkg, "gen", "nodes", sep = "-")
   pkg_version <- unlist(packageVersion("mlr"))
-  tcp_msg <- list(
+  json_out <- list(
     command = "GENERATE_NODES",
     module = list(
       name = module_name,
@@ -22,16 +22,17 @@ generate_nodes <- function(pkg) {
         paste(pkg_version, collapse = ".")
       ),
       nodes = data_frame(
-        name = fun_names,
-        args = fun_args,
-        #doc = fun_docs,
+        name = names,
+        args = args,
+        #doc = docs,
         category = pkg
       )
     )
     ) %>%
     toJSON(auto_unbox = TRUE) #%>% 
     #structure(set_size = length(fun_names))
-  tcp_msg
+  rflow_send(json_out, con)
+  invisible(NULL)
 }
 
 
@@ -40,23 +41,26 @@ generate_nodes <- function(pkg) {
 #' @param tcp_msg Character scalar holding a message from the tcp server in JSON format
 #' @return Character scalar holding the generated code
 #' @importFrom rstudioapi insertText
+#' @importFrom jsonlite fromJSON
 #' @export
-generate_code <- function(funcs) {
-  #funcs <- fromJSON(tcp_msg)$funcs
+generate_code <- function(con) {
+  #json_out <- "{command : RSTUDIO_IN}"
+  #rflow_send(json_out, con)
+  Sys.sleep(.5)
+  json_in <- rflow_receive(con)
+  funs <- fromJSON(json_in)$funcs
   signatures <- mapply(
-    get_signature,
-    funcs$name,
-    funcs$args,
+    fun_signature,
+    funs$name,
+    funs$args,
     USE.NAMES = FALSE
   )
   calls <- sprintf(
     "%s <- %s\n",
-    funcs$outputVar,
+    funs$outputVar,
     signatures
   )
   code <- paste(calls, collapse = "")
   
   insertText(Inf, code)
 }
-
-generate_code(json$funcs)

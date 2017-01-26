@@ -2,11 +2,10 @@
 
 export(generate_code)
 export(generate_nodes)
-export(receive_nodes)
 export(rflow_end)
 export(rflow_start)
-export(send_nodes)
 importFrom(dplyr,data_frame)
+importFrom(jsonlite,fromJSON)
 importFrom(jsonlite,toJSON)
 importFrom(magrittr,'%>%')
 importFrom(rstudioapi,insertText)
