@@ -1,13 +1,13 @@
 <script type="text/javascript">
     RED.nodes.registerType('rstudio-out',{
         category: 'rstudio',
-        color: '#2468c7',
+        color: '#6bc6ff',
         defaults: {
             name: {value:""}
         },
         inputs:1,
         outputs:0,
-        icon: "file.png",
+        icon: "rstudio.png",
         label: function() {
             return this.name||"rstudio-out";
         }
@@ -30,13 +30,13 @@
 <script type="text/javascript">
     RED.nodes.registerType('rstudio-in',{
         category: 'rstudio',
-        color: '#2468c7',
+        color: '#6bc6ff',
         defaults: {
             name: {value:""}
         },
         inputs:1,
         outputs:0,
-        icon: "file.png",
+        icon: "rstudio.png",
         label: function() {
             return this.name||"rstudio-in";
         }
