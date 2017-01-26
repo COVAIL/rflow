@@ -11,6 +11,7 @@ var replaceId = "JS_id_JS";
 var user_directory = argv.dir || "./";
 var node_port = argv.node_port || 1337;
 var comm_port = argv.comm_port || 1338;
+var ip_address = argv.ip_address || '127.0.0.1';
 
 var eventsPath = path.resolve(user_directory, "node_modules/node-red/red/runtime/events");
 var events = require(eventsPath.toString());
@@ -116,7 +117,7 @@ var tcp_server = net.createServer(function(socket) {
 });
 
 
-tcp_server.listen(comm_port, '127.0.0.1');
+tcp_server.listen(comm_port, ip_address);
 
 function writeComm(comm_text, code){
   if(comm_socket){
@@ -153,8 +154,6 @@ app.use(settings.httpAdminRoot,RED.httpAdmin);
 
 // Serve the http nodes UI from /api
 app.use(settings.httpNodeRoot,RED.httpNode);
-
-
 
 server.listen(node_port);
 
