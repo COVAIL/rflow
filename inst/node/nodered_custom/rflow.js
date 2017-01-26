@@ -15,6 +15,8 @@ var comm_port = argv.comm_port || 1338;
 var eventsPath = path.resolve(user_directory, "node_modules/node-red/red/runtime/events");
 var events = require(eventsPath.toString());
 
+var ERROR_CODE = "ERROR_CODE";
+
 function RtoJS(argName){
   var JSname = argName;
   if(argName == 'id'){
@@ -44,7 +46,7 @@ var comm_socket;
 var tcp_server = net.createServer(function(socket) {
   var msg = '';
   comm_socket = socket;
-  socket.write("Hello, I am the RFlow TCP Server.")
+  socket.write("Hello, I am the RFlow TCP Server. I like to talk JSON.")
   socket.on('error', function(data){
     console.log('ERROR::RECEIVED DATA::'+ data);
     writeComm('ERROR::'+data);
@@ -61,7 +63,6 @@ var tcp_server = net.createServer(function(socket) {
                     function(){
                       writeComm('LOADED_NODERED');
                       events.on('rstudio-out', function(msg){
-                          console.log('rstudio out event');
                           writeComm(JSON.stringify(msg));
                       })
                     }
@@ -73,7 +74,7 @@ var tcp_server = net.createServer(function(socket) {
                   break;
               case 'RUN_FLOWS':
                   writeComm('Received RUN_FLOWS command.');
-                  writeComm(' sorry I dont have anything to do yet, not implemented');
+                  writeComm(' sorry I dont have anything to do yet, not implemented', ERROR_CODE);
                   break;
               case 'GENERATE_NODES':
                   writeComm('Received GEN_NODES command.');
@@ -98,20 +99,18 @@ var tcp_server = net.createServer(function(socket) {
                     }
                     writeComm('Generated new NodeRed Nodes in Directory');
                   } else {
-                    writeComm('Please provide a module JSON object in the JSON message');
+                    writeComm('Please provide a module JSON object in the JSON message', ERROR_CODE);
                   }
                   break;
               default:
-                 console.log('DEFAULT switch');
-                 writeComm("Don't know what to do with this command, "+recv.commadn);
+                 writeComm("Don't know what to do with this command, "+recv.commadn, ERROR_CODE);
             }
       }catch(ex){
-        console.log("ERROR:::");
         console.log(ex);
+        writeComm(ex.message, ERROR_CODE);
       }
     } else {
-      console.log('no JSON object');
-      writeComm("Please send a JSON Object, and command");
+      writeComm("Please send a JSON Object, and command", ERROR_CODE);
     }
   });
 });
@@ -119,9 +118,12 @@ var tcp_server = net.createServer(function(socket) {
 
 tcp_server.listen(comm_port, '127.0.0.1');
 
-function writeComm(comm_text){
+function writeComm(comm_text, code){
   if(comm_socket){
-    comm_socket.write(comm_text);
+    var msg = {}
+    msg.code = code || "INFO";
+    msg.message = comm_text;
+    comm_socket.write(JSON.stringify(msg));
   }
 }
 
