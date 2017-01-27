@@ -90,8 +90,7 @@ fun_doc <- function(fun_name, pkg) {
 #' @return Character scalar representing a function signature
 fun_signature <- function(func_name, func_args) {
   c(as.name(func_name), setNames(as.list(func_args$value), func_args$name)) %>% 
-    as.call %>% 
-    deparse
+    as.call
 }
 
 

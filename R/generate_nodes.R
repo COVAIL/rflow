@@ -60,7 +60,15 @@ generate_code <- function(con) {
     funs$outputVar,
     signatures
   )
-  code <- paste(calls, collapse = "")
+  code <- paste(calls, collapse = "") %>% 
+    gsub('\\\\"', "'", .) %>% 
+    gsub('\"{2,2}', "''", .) %>% 
+    gsub('\"', "", .)
   
   insertText(Inf, code)
 }
+
+
+
+
+
