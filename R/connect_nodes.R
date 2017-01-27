@@ -10,30 +10,37 @@
 #' @importFrom rstudioapi viewer
 #' @export
 rflow_start <- function(viewer = TRUE, comm_port = "1338") {
-  cwd <- getwd()
+  #cwd <- getwd()
   path <- system.file("node/nodered_custom", package = "nodegen")
-  setwd(path)
+  #setwd(path)
   cmd <- "node"
   app <- file.path(path, "rflow.js")
-  args <- c(app, comm_port)
+  node_port <- "1337"
+  args <- paste(
+    app, 
+    "--comm_port", comm_port,
+    "--node_port", node_port,
+    "--dir", path
+  )
   #if (comm_port != "1338") node_call = paste(node_call, comm_port)
-  node_url <- "http://127.0.0.1:1337"
+  node_url <- paste("http://127.0.0.1", node_port, sep = ":")
   
   system2(cmd, args, wait = FALSE, stdout = FALSE)
-  Sys.sleep(.5)
+  Sys.sleep(3)
   con <- socketConnection(host = "127.0.0.1", port = comm_port, open = "r+b")
+  json_in <- rawToChar(readBin(con, raw(), 1e3))
   json_out <- '{"command" : "START_NODERED"}'
   writeBin(charToRaw(json_out), con)
   start_time <- Sys.time()
   wait <- TRUE
   while (wait) {
-    json_in <- rawToChar(readBin(con, raw(), 1e3))
-    if (json_in == "LOADED_NODERED") break
+    json_in <- fromJSON(rawToChar(readBin(con, raw(), 1e3)))
+    if (json_in$message == "LOADED_NODERED") break
     if (as.double(Sys.time() - start_time) > 10) 
       return(message("Unable to start NodeRed"))
   }
   if (viewer) viewer(node_url) else getOption("browser")(node_url)
-  setwd(cwd)
+  #setwd(cwd)
   con
 }
 

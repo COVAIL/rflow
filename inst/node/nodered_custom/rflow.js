@@ -64,7 +64,7 @@ var tcp_server = net.createServer(function(socket) {
                     function(){
                       writeComm('LOADED_NODERED');
                       events.on('rstudio-out', function(msg){
-                          writeComm(JSON.stringify(msg));
+                          writeComm(msg);
                       })
                     }
                   );

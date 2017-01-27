@@ -48,7 +48,7 @@ generate_code <- function(con) {
   #rflow_send(json_out, con)
   Sys.sleep(.5)
   json_in <- rflow_receive(con)
-  funs <- fromJSON(json_in)$funcs
+  funs <- fromJSON(json_in)$message$funcs
   signatures <- mapply(
     fun_signature,
     funs$name,
