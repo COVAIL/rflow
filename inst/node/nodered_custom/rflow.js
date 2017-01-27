@@ -239,7 +239,7 @@ function getNodeHTMLTemplate(f){
   f.args.forEach(function(arg, idx){
     output += `
     if(typeof _`+RtoJS(arg.name)+` != 'undefined' && _`+RtoJS(arg.name)+` != ''){
-      args.push({"name":"`+RtoJS(arg.name)+`", "value":_`+RtoJS(arg.name)+`});
+      args.push({"name":"`+arg.name+`", "value":_`+RtoJS(arg.name)+`});
     }
     `
   });
