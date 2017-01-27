@@ -1,11 +1,22 @@
 var fs = require('fs');
 var mkdirp = require('mkdirp');
 var path = require("path");
+var argv = require('yargs').argv;
+
 var getDirName = path.dirname;
 var replacePeriod = "JS_XX_JS";
 var replaceId = "JS_id_JS";
 
-var events = require("./node_modules/node-red/red/runtime/events");
+
+var user_directory = argv.dir || "./";
+var node_port = argv.node_port || 1337;
+var comm_port = argv.comm_port || 1338;
+var ip_address = argv.ip_address || '127.0.0.1';
+
+var eventsPath = path.resolve(user_directory, "node_modules/node-red/red/runtime/events");
+var events = require(eventsPath.toString());
+
+var ERROR_CODE = "ERROR_CODE";
 
 function RtoJS(argName){
   var JSname = argName;
@@ -24,8 +35,6 @@ function JStoR(jsArgName){
   return argName;
 }
 
-
-
 var http = require('http');
 var express = require("express");
 var RED = require("node-red");
@@ -38,7 +47,7 @@ var comm_socket;
 var tcp_server = net.createServer(function(socket) {
   var msg = '';
   comm_socket = socket;
-  socket.write("Hello, I am the RFlow TCP Server.")
+  socket.write("Hello, I am the RFlow TCP Server. I like to talk JSON.")
   socket.on('error', function(data){
     console.log('ERROR::RECEIVED DATA::'+ data);
     writeComm('ERROR::'+data);
@@ -55,7 +64,6 @@ var tcp_server = net.createServer(function(socket) {
                     function(){
                       writeComm('LOADED_NODERED');
                       events.on('rstudio-out', function(msg){
-                          console.log('rstudio out event');
                           writeComm(JSON.stringify(msg));
                       })
                     }
@@ -67,13 +75,13 @@ var tcp_server = net.createServer(function(socket) {
                   break;
               case 'RUN_FLOWS':
                   writeComm('Received RUN_FLOWS command.');
-                  writeComm(' sorry I dont have anything to do yet, not implemented');
+                  writeComm(' sorry I dont have anything to do yet, not implemented', ERROR_CODE);
                   break;
               case 'GENERATE_NODES':
                   writeComm('Received GEN_NODES command.');
                   if(recv.module){
                     var moduleName = recv.module.name;
-                    var modulePath = path.join(process.cwd(),moduleName);
+                    var modulePath = path.join(user_directory,moduleName);
                     if(RED.nodes.getModuleInfo(moduleName) != null){
                       //uninstall doesn't work probably because of the userDir up one dir having the node_modules.
                       RED.nodes.uninstallModule(moduleName).then(
@@ -92,31 +100,31 @@ var tcp_server = net.createServer(function(socket) {
                     }
                     writeComm('Generated new NodeRed Nodes in Directory');
                   } else {
-                    writeComm('Please provide a module JSON object in the JSON message');
+                    writeComm('Please provide a module JSON object in the JSON message', ERROR_CODE);
                   }
                   break;
               default:
-                 console.log('DEFAULT switch');
-                 writeComm("Don't know what to do with this command, "+recv.commadn);
+                 writeComm("Don't know what to do with this command, "+recv.commadn, ERROR_CODE);
             }
       }catch(ex){
-        console.log("ERROR:::");
         console.log(ex);
+        writeComm(ex.message, ERROR_CODE);
       }
     } else {
-      console.log('no JSON object');
-      writeComm("Please send a JSON Object, and command");
+      writeComm("Please send a JSON Object, and command", ERROR_CODE);
     }
   });
 });
 
 
-var comm_port = process.argv[2] || 1338;
-tcp_server.listen(comm_port, '127.0.0.1');
+tcp_server.listen(comm_port, ip_address);
 
-function writeComm(comm_text){
+function writeComm(comm_text, code){
   if(comm_socket){
-    comm_socket.write(comm_text);
+    var msg = {}
+    msg.code = code || "INFO";
+    msg.message = comm_text;
+    comm_socket.write(JSON.stringify(msg));
   }
 }
 
@@ -134,8 +142,7 @@ var server = http.createServer(app);
 var settings = {
     httpAdminRoot:"/",
     httpNodeRoot: "/api",
-    userDir:"./",
-    flowFile:"./flows_vagrant.json",
+    userDir:user_directory,
     functionGlobalContext: { }    // enables global context
 };
 
@@ -147,8 +154,6 @@ app.use(settings.httpAdminRoot,RED.httpAdmin);
 
 // Serve the http nodes UI from /api
 app.use(settings.httpNodeRoot,RED.httpNode);
-
-var node_port = 1337;
 
 server.listen(node_port);
 
@@ -277,7 +282,7 @@ function getNodeHTMLTemplate(f){
     output += "\t\t\t\t"+RtoJS(arg.name)+":{value:\""+((typeof arg.defaultValue == 'string')?arg.defaultValue.split('\"').join('\\\"'):arg.defaultValue)+"\"},\n";
   });
   output += `   outputVar: {value:"`+f.name+`_OUTPUT_VAR"},
-              payload: {value:""},
+              rcode: {value:""},
               outputs: {value:1},
               noerr: {value:0,required:true,validate:function(v){ return ((!v) || (v === 0)) ? true : false; }}
           },
@@ -293,8 +298,8 @@ function getNodeHTMLTemplate(f){
               min:1
           });
 
-          if($('#node-input-payload').val() == ""){
-              $('#node-input-payload').val(makeExpression`+RtoJS(f.name)+`(`
+          if($('#node-input-rcode').val() == ""){
+              $('#node-input-rcode').val(makeExpression`+RtoJS(f.name)+`(`
                 f.args.forEach(function(arg, idx){
                 if(idx > 0){
                 output += ',';
@@ -306,12 +311,12 @@ function getNodeHTMLTemplate(f){
                 output += '));'
 
             output += `
-            $('.form-tips .generated-code').text($('#node-input-payload').val());
-            node.payload = $('#node-input-payload').val();
+            $('.form-tips .generated-code').text($('#node-input-rcode').val());
+            node.rcode = $('#node-input-rcode').val();
           }
 
           $('.arg-input').on('keyup', function(evt){
-            $('#node-input-payload').val(makeExpression`+RtoJS(f.name)+`(`
+            $('#node-input-rcode').val(makeExpression`+RtoJS(f.name)+`(`
   f.args.forEach(function(arg, idx){
     if(idx > 0){
       output += ',';
@@ -323,14 +328,14 @@ function getNodeHTMLTemplate(f){
   output += '));'
 
   output += `
-          $('.form-tips .generated-code').text($('#node-input-payload').val());
-          node.payload = $('#node-input-payload').val();
+          $('.form-tips .generated-code').text($('#node-input-rcode').val());
+          node.rcode = $('#node-input-rcode').val();
         });
 
 
         },
         oneditsave: function() {
-          this.payload = $('#node-input-payload').val();
+          this.rcode = $('#node-input-rcode').val();
         },
         oneditresize: function(size) {
 
@@ -342,7 +347,7 @@ function getNodeHTMLTemplate(f){
         <div class="form-row">
         <label for="node-input-name"><i class="fa fa-tag"></i> <span data-i18n="common.label.name"></span></label>
         <input type="text" id="node-input-name" data-i18n="[placeholder]common.label.name">
-        <input type="hidden" id="node-input-payload" value="">
+        <input type="hidden" id="node-input-rcode" value="">
         </div>
   `
 
@@ -388,10 +393,8 @@ function getNodeJSTemplate(f){
           RED.nodes.createNode(this,config);
           var node = this;
           node.name = config.name;
-          console.log("config.payload:"+config.payload);
-
-          if(config.payload.trim() == ""){
-            node.payload = {
+          if(config.rcode.trim() == ""){
+            jsonPayload = {
               "R_Function":true,
               "name":"`+f.name+`",
               "outputVar":"`+f.name+`_OUTPUT_VAR",
@@ -406,29 +409,46 @@ function getNodeJSTemplate(f){
               });
               output += ` ]};
 
+              node.rcode = JSON.stringify(jsonPayload);
             } else {
-              node.payload = config.payload;
+              node.rcode = config.rcode;
             }
 
           this.on('input', function(msg) {
-            console.log('input. node.payload')
-            console.log(node.payload);
-            console.log(typeof node.payload);
-            if(typeof node.payload == 'string'){
-              if(node.payload.indexOf('{')){
-                node.payload = JSON.parse(node.payload);
+            console.log(1);
+            if(typeof node.rcode == 'string'){
+              console.log(2);
+              if(node.rcode.indexOf('{') >= 0){
+                try{
+                  console.log(3);
+                  jsonPayload = JSON.parse(node.rcode);
+                  console.log(4);
+                  if(typeof jsonPayload.R_Function != "undefined"  && jsonPayload.R_Function){
+                    console.log(5);
+                    var code = jsonPayload;
+                    if(typeof msg.R_FunctionCalls == 'undefined'){
+                      console.log(6);
+                      msg.R_FunctionCalls = {};
+                      msg.R_FunctionCalls.funcs = [];
+                    }
+                    console.log(7);
+                    msg.R_FunctionCalls.funcs.push(code);
+                    node.send(msg);
+                    console.log(8);
+                  } else {
+                    node.error("R_Function is not defined on object?");
+                  }
+                } catch(err) {
+                  node.error("Unable to convert node.rcode to JSON object");
+                  node.error(err)
+                }
+              } else {
+                node.error("Not a JSON string");
               }
+            } else {
+              node.error("node.rcode is not typeof 'string'")
             }
-
-            if(typeof node.payload == 'object' && node.payload.R_Function){
-                        var code = node.payload;
-                        if(typeof msg.R_FunctionCalls == 'undefined'){
-                          msg.R_FunctionCalls = {};
-                          msg.R_FunctionCalls.funcs = [];
-                        }
-                        msg.R_FunctionCalls.funcs.push(code);
-            }
-            node.send(msg);
+            console.log(9);
           });
       }
       RED.nodes.registerType("`+f.category+`-`+RtoJS(f.name)+`",`+RtoJS(f.name)+`Function);
