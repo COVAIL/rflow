@@ -10,9 +10,9 @@
 #' @importFrom rstudioapi viewer
 #' @export
 rflow_start <- function(viewer = TRUE, comm_port = "1338") {
-  #cwd <- getwd()
+  cwd <- getwd()
   path <- system.file("node/nodered_custom", package = "nodegen")
-  #setwd(path)
+  setwd(path)
   cmd <- "node"
   app <- file.path(path, "rflow.js")
   node_port <- "1337"
@@ -53,7 +53,7 @@ rflow_start <- function(viewer = TRUE, comm_port = "1338") {
       return(message("Unable to start NodeRed"))
   }
   if (viewer) viewer(node_url) else getOption("browser")(node_url)
-  #setwd(cwd)
+  setwd(cwd)
   con
 }
 
