@@ -49,22 +49,12 @@ generate_code <- function(con) {
   Sys.sleep(.5)
   json_in <- rflow_receive(con)
   funs <- fromJSON(json_in)$message$funcs
-  signatures <- mapply(
-    fun_signature,
-    funs$name,
-    funs$args,
-    USE.NAMES = FALSE
-  )
-  calls <- sprintf(
-    "%s <- %s\n",
-    funs$outputVar,
-    signatures
-  )
-  code <- paste(calls, collapse = "") %>% 
+  signatures <- mapply(fun_signature, funs$name, funs$args, USE.NAMES = FALSE)
+  
+  code <- paste0(funs$outputVar, " <- ", signatures, "\n", collapse = "") %>% 
     gsub('\\\\"', "'", .) %>% 
     gsub('\"{2,2}', "''", .) %>% 
     gsub('\"', "", .)
-  
   insertText(Inf, code)
 }
 
