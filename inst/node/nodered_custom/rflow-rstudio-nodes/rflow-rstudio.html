@@ -32,10 +32,11 @@
         category: 'input',
         color: '#6bc6ff',
         defaults: {
-            name: {value:""}
+            name: {value:""},
+            rstudioConfig: {value:"", type:"rstudio config"}
         },
-        inputs:1,
-        outputs:0,
+        inputs:0,
+        outputs:1,
         icon: "rstudio.png",
         label: function() {
             return this.name||"rstudio in";
@@ -48,8 +49,28 @@
         <label for="node-input-name"><i class="icon-tag"></i> Name</label>
         <input type="text" id="node-input-name" placeholder="Name">
     </div>
+    <div class="form-row">
+        <label for="node-input-rstudioConfig"><i class="icon-tag"></i> Name</label>
+        <input type="text" id="node-input-rstudioConfig" placeholder="Config">
+    </div>
 </script>
 
 <script type="text/x-red" data-help-name="rstudio out">
     <p>Receive Commands from RStudio</p>
+</script>
+
+
+<script type="text/javascript">
+    RED.nodes.registerType('rstudio config',{
+        category: 'config',
+        defaults: {
+        },
+        label: function() {
+            return 'rstudio config';
+        }
+    });
+</script>
+
+<script type="text/x-red" data-template-name="rstudio config">
+/* <!-- No Content for the RStudio Config Node -->  */
 </script>
