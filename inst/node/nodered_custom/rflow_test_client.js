@@ -12,7 +12,7 @@ client.connect(1338, '127.0.0.1', function() {
 });
 
 client.on('data', function(data) {
-	console.log('Received: ' + data);
+	console.log('Received: ' + data + '\n\n');
 //	client.destroy(); // kill client after server's response
 });
 

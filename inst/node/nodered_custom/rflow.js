@@ -75,7 +75,11 @@ var tcp_server = net.createServer(function(socket) {
                   break;
               case 'RUN_FLOWS':
                   writeComm('Received RUN_FLOWS command.');
-                  writeComm(' sorry I dont have anything to do yet, not implemented', ERROR_CODE);
+                  var node_names = [];
+                  if(recv.node_names){
+                    node_names = recv.node_names;
+                  }
+                  events.emit('rstudio-in', {"node_names":node_names});
                   break;
               case 'GENERATE_NODES':
                   writeComm('Received GEN_NODES command.');
