@@ -1,4 +1,4 @@
-module.exports = function(RED) {
+  module.exports = function(RED) {
     function RStudioOutNode(config) {
         RED.nodes.createNode(this,config);
         var node = this;
@@ -17,8 +17,6 @@ module.exports = function(RED) {
         this.rstudioConfig = RED.nodes.getNode(config.rstudioConfig);
         var node = this;
         node.name = config.name || "rstudio-in";
-console.log(node.rstudioConfig);
-console.log(node.rstudioConfig.addRStudioIn)
         node.rstudioConfig.addRStudioIn(node);
         // Retrieve the config node
 
@@ -35,26 +33,27 @@ console.log(node.rstudioConfig.addRStudioIn)
         var configNode = this;
         configNode.nodeNames = [];
         configNode.addRStudioIn = function(in_node){
-          console.log('hello in RStudioIn');
           configNode.nodeNames.push(in_node);
         }
-        RED.events.on('rstudio-in', function(in_msg){
-          var names = in_msg.node_names || [];
-          if(names.length == 0){
-            for(var j=0;j<configNode.nodeNames.length; j++){
-                configNode.nodeNames[j].emit('input', in_msg);
-            }
-          } else {
-            for(var i=0;i<names.length;i++){
+        if(RED.events.listenerCount('rstudio-in') == 0){
+          RED.events.on('rstudio-in', function(in_msg){
+            var names = in_msg.node_names || [];
+            if(names.length == 0){
               for(var j=0;j<configNode.nodeNames.length; j++){
-                if(names[i] == configNode.nodeNames[j].name){
                   configNode.nodeNames[j].emit('input', in_msg);
+              }
+            } else {
+              for(var i=0;i<names.length;i++){
+                for(var j=0;j<configNode.nodeNames.length; j++){
+                  if(names[i] == configNode.nodeNames[j].name){
+                    configNode.nodeNames[j].emit('input', in_msg);
+                  }
                 }
               }
             }
-          }
 
-        });
+          });
+        }
     }
     RED.nodes.registerType("rstudio config",RStudioConfig);
 
