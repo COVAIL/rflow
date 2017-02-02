@@ -288,6 +288,7 @@ function getNodeHTMLTemplate(f){
   output += `   outputVar: {value:"`+f.name+`_OUTPUT_VAR"},
               rcode: {value:""},
               outputs: {value:1},
+              inputCount: {value:1},
               noerr: {value:0,required:true,validate:function(v){ return ((!v) || (v === 0)) ? true : false; }}
           },
           inputs:1,
@@ -299,6 +300,9 @@ function getNodeHTMLTemplate(f){
           oneditprepare: function() {
           var node = this;
           $( "#node-input-outputs" ).spinner({
+              min:1
+          });
+          $( "#node-input-inputCount" ).spinner({
               min:1
           });
 
@@ -374,10 +378,15 @@ function getNodeHTMLTemplate(f){
   `
 
   output += `
+      <div class="form-row">
+      <label for="node-input-inputCount"><i class="fa fa-random"></i> <span data-i18n="function.label.inputs">Inputs</span></label>
+      <input id="node-input-inputCount" style="width: 60px;" value="1">
+      </div>
         <div class="form-row">
         <label for="node-input-outputs"><i class="fa fa-random"></i> <span data-i18n="function.label.outputs"></span></label>
         <input id="node-input-outputs" style="width: 60px;" value="1">
         </div>
+
         <div class="form-tips"><span>See the Info tab for help writing R functions in NodeRed.<p><code class="generated-code"></code></p></span></div>
       </script>
 
@@ -397,6 +406,8 @@ function getNodeJSTemplate(f){
           RED.nodes.createNode(this,config);
           var node = this;
           node.name = config.name;
+          node.inputCount = parseInt(config.inputCount);
+
           if(config.rcode.trim() == ""){
             jsonPayload = {
               "R_Function":true,
@@ -418,27 +429,36 @@ function getNodeJSTemplate(f){
               node.rcode = config.rcode;
             }
 
+
+          node.inputReceived = [];
+
           this.on('input', function(msg) {
-            console.log(1);
             if(typeof node.rcode == 'string'){
-              console.log(2);
               if(node.rcode.indexOf('{') >= 0){
                 try{
-                  console.log(3);
                   jsonPayload = JSON.parse(node.rcode);
-                  console.log(4);
                   if(typeof jsonPayload.R_Function != "undefined"  && jsonPayload.R_Function){
-                    console.log(5);
                     var code = jsonPayload;
                     if(typeof msg.R_FunctionCalls == 'undefined'){
-                      console.log(6);
                       msg.R_FunctionCalls = {};
                       msg.R_FunctionCalls.funcs = [];
                     }
-                    console.log(7);
-                    msg.R_FunctionCalls.funcs.push(code);
-                    node.send(msg);
-                    console.log(8);
+
+                    if(node.inputCount > 1 && node.inputReceived.length < node.inputCount && msg.R_FunctionCalls.funcs.length > 0){
+                      node.inputReceived.push(msg.R_FunctionCalls.funcs[msg.R_FunctionCalls.funcs.length-1]);
+                      if(node.inputReceived.length == node.inputCount){
+                        msg.R_FunctionCalls.funcs = msg.R_FunctionCalls.funcs.slice(0, -1);
+                        Array.prototype.push.apply(msg.R_FunctionCalls.funcs, node.inputReceived);
+                        node.inputReceived = [];
+                        msg.R_FunctionCalls.funcs.push(code);
+                        node.send(msg);
+                      }
+                    } else {
+                      msg.R_FunctionCalls.funcs.push(code);
+                      node.send(msg);
+                    }
+
+
                   } else {
                     node.error("R_Function is not defined on object?");
                   }
@@ -452,7 +472,6 @@ function getNodeJSTemplate(f){
             } else {
               node.error("node.rcode is not typeof 'string'")
             }
-            console.log(9);
           });
       }
       RED.nodes.registerType("`+f.category+`-`+RtoJS(f.name)+`",`+RtoJS(f.name)+`Function);
