@@ -74,7 +74,7 @@ var tcp_server = net.createServer(function(socket) {
                   process.exit();
                   break;
               case 'RUN_FLOWS':
-                  writeComm('Received RUN_FLOWS command.');
+                  //writeComm('Received RUN_FLOWS command.');
                   var node_names = [];
                   if(recv.node_names){
                     node_names = recv.node_names;
