@@ -228,6 +228,16 @@ function getNodeHTMLTemplate(f){
         output += `
       }
 
+      function makePrettyFunction`+RtoJS(f.name)+`(_expression){
+        if(typeof _expression === "string"){ _expression = JSON.parse(_expression);}
+        var funcString =  _expression.outputVar + ' <- ' + _expression.name + '(';
+          _expression.args.forEach(function(arg, idx){
+            if(idx > 0) funcString += ', ';
+            funcString += arg.name + ' = ' + arg.value;
+          });
+          funcString += ')';
+          return funcString;
+      }
 
       function makeExpression`+RtoJS(f.name)+`(`;
 
@@ -242,7 +252,7 @@ function getNodeHTMLTemplate(f){
   `
   f.args.forEach(function(arg, idx){
     output += `
-    if(typeof _`+RtoJS(arg.name)+` != 'undefined' && _`+RtoJS(arg.name)+` != ''){
+    if(typeof _`+RtoJS(arg.name)+` != 'undefined' && _`+RtoJS(arg.name)+` != '' && _`+RtoJS(arg.name)+` != `+RtoJS(f.name)+`_DEFAULT_VALUES.`+RtoJS(arg.name)+`){
       args.push({"name":"`+arg.name+`", "value":_`+RtoJS(arg.name)+`});
     }
     `
@@ -286,7 +296,17 @@ function getNodeHTMLTemplate(f){
     output += "\t\t\t\t"+RtoJS(arg.name)+":{value:\""+((typeof arg.defaultValue == 'string')?arg.defaultValue.split('\"').join('\\\"'):arg.defaultValue)+"\"},\n";
   });
   output += `   outputVar: {value:"`+f.name+`_OUTPUT_VAR"},
-              rcode: {value:""},
+              rcode: {value:makeExpression`+RtoJS(f.name)+`(`
+    f.args.forEach(function(arg, idx){
+      if(idx > 0){
+        output += ',';
+      }
+      output += " $('.arg-input."+RtoJS(arg.name)+"').val()";
+    });
+    output += ", $('.arg-input.outputVar').val()"
+
+    output += ')},';
+    output += `
               outputs: {value:1},
               inputCount: {value:1},
               noerr: {value:0,required:true,validate:function(v){ return ((!v) || (v === 0)) ? true : false; }}
@@ -319,9 +339,10 @@ function getNodeHTMLTemplate(f){
                 output += '));'
 
             output += `
-            $('.form-tips .generated-code').text($('#node-input-rcode').val());
             node.rcode = $('#node-input-rcode').val();
           }
+          var prettyFunc = makePrettyFunction`+RtoJS(f.name)+`($('#node-input-rcode').val());
+          $('.form-tips .generated-code').text(prettyFunc);
 
           $('.arg-input').on('keyup', function(evt){
             $('#node-input-rcode').val(makeExpression`+RtoJS(f.name)+`(`
@@ -336,7 +357,8 @@ function getNodeHTMLTemplate(f){
   output += '));'
 
   output += `
-          $('.form-tips .generated-code').text($('#node-input-rcode').val());
+          var prettyFunc = makePrettyFunction`+RtoJS(f.name)+`($('#node-input-rcode').val());
+          $('.form-tips .generated-code').text(prettyFunc);
           node.rcode = $('#node-input-rcode').val();
         });
 
