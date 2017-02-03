@@ -4,7 +4,7 @@
 #' @inheritParams fun_check
 #' @importFrom jsonlite toJSON
 #' @export
-generate_nodes <- function(pkg, con) {
+generate_nodes <- function(pkg) {
   names <- fun_name(pkg)
   args <- fun_args(names, pkg)
   docs <- fun_doc(names, pkg)
@@ -31,7 +31,7 @@ generate_nodes <- function(pkg, con) {
     ) %>%
     toJSON(auto_unbox = TRUE) #%>% 
     #structure(set_size = length(fun_names))
-  rflow_send(json_out, con)
+  rflow_send(json_out)
   invisible(NULL)
 }
 
@@ -43,11 +43,11 @@ generate_nodes <- function(pkg, con) {
 #' @importFrom rstudioapi insertText
 #' @importFrom jsonlite fromJSON
 #' @export
-generate_code <- function(con) {
-  #json_out <- "{command : RSTUDIO_IN}"
-  #rflow_send(json_out, con)
+generate_code <- function() {
+  json_out <- '{"command" : "RUN_FLOWS", "node_names" : []}'
+  rflow_send(json_out)
   Sys.sleep(.5)
-  json_in <- rflow_receive(con)
+  json_in <- rflow_receive()
   funs <- fromJSON(json_in)$message$funcs
   signatures <- mapply(fun_signature, funs$name, funs$args, USE.NAMES = FALSE)
   

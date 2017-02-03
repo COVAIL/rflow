@@ -1,5 +1,8 @@
 
 
+#' holds connection object
+cache <- new.env()
+
 #' @title Start RFlow
 #' @description Takes app and communication ports to start
 #' @param viewer Logical scalar determining whether to open the node-red environment
@@ -54,7 +57,8 @@ rflow_start <- function(viewer = TRUE, comm_port = "1338") {
   }
   if (viewer) viewer(node_url) else getOption("browser")(node_url)
   setwd(cwd)
-  con
+  assign("con", con, envir = cache)
+  invisible(NULL)
 }
 
 #' @title JSON Writer
@@ -62,8 +66,8 @@ rflow_start <- function(viewer = TRUE, comm_port = "1338") {
 #' @param pkg_nodes Character scalar holding JSON representation of nodes
 #' @param con Connection object point to node application's tcp server
 #' @return NULL invisibly
-rflow_send <- function(json_out, con) {
-  writeBin(charToRaw(json_out), con)
+rflow_send <- function(json_out) {
+  writeBin(charToRaw(json_out), cache$con)
   invisible(NULL)
 }
 
@@ -71,8 +75,8 @@ rflow_send <- function(json_out, con) {
 #' @description Receive a JSON Representation of Generated Functions from the NodeRed App
 #' @param con Connection object point to node application's tcp server
 #' @return Character scalar holding a message in JSON format
-rflow_receive <- function(con) {
-  json_in <- rawToChar(readBin(con, raw(), 1e5))
+rflow_receive <- function() {
+  json_in <- rawToChar(readBin(cache$con, raw(), 1e5))
   json_in
 }
 
@@ -83,9 +87,9 @@ rflow_receive <- function(con) {
 #' @inheritParams generate_code
 #' @return NULL returned invisibly
 #' @export
-rflow_end <- function(con) {
+rflow_end <- function() {
   json_out <- '{"command" : "STOP_RFLOW"}'
-  writeBin(charToRaw(json_out), con)
-  close(con)
+  writeBin(charToRaw(json_out), cache$con)
+  close(cache$con)
   invisible(NULL)
 }

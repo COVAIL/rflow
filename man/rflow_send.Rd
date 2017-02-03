@@ -4,12 +4,12 @@
 \alias{rflow_send}
 \title{JSON Writer}
 \usage{
-rflow_send(json_out, con)
+rflow_send(json_out)
 }
 \arguments{
-\item{con}{Connection object point to node application's tcp server}
-
 \item{pkg_nodes}{Character scalar holding JSON representation of nodes}
+
+\item{con}{Connection object point to node application's tcp server}
 }
 \value{
 NULL invisibly
