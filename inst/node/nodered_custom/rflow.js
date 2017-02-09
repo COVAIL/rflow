@@ -46,17 +46,22 @@ var comm_socket;
 
 var tcp_server = net.createServer(function(socket) {
   var msg = '';
+  socket.setEncoding('utf8');
   comm_socket = socket;
-  socket.write("Hello, I am the RFlow TCP Server. I like to talk JSON.")
+  socket.write('\u0000'+"Hello, I am the RFlow TCP Server. I like to talk JSON."+'\u0000')
   socket.on('error', function(data){
     console.log('ERROR::RECEIVED DATA::'+ data);
     writeComm('ERROR::'+data);
   });
+  var fullData = '';
 	socket.on('data', function(data){
+    fullData += data.toString('utf8');
+    console.log(fullData);
 
-    if(typeof data == 'object'){
+    if(fullData.charCodeAt(fullData.length-1) == 0){
       try{
-          var recv = JSON.parse(data.toString().trim());
+          var recv = JSON.parse(fullData.substring(0, fullData.length-1));
+          fullData = '';
           switch(recv.command) {
               case 'START_NODERED':
                   // Start the nodered runtime
@@ -82,7 +87,7 @@ var tcp_server = net.createServer(function(socket) {
                   events.emit('rstudio-in', {"node_names":node_names});
                   break;
               case 'GENERATE_NODES':
-                  writeComm('Received GEN_NODES command.');
+                  writeComm('Received GENERATE_NODES command.');
                   if(recv.module){
                     var moduleName = recv.module.name;
                     var modulePath = path.join(user_directory,moduleName);
@@ -114,9 +119,7 @@ var tcp_server = net.createServer(function(socket) {
         console.log(ex);
         writeComm(ex.message, ERROR_CODE);
       }
-    } else {
-      writeComm("Please send a JSON Object, and command", ERROR_CODE);
-    }
+  }
   });
 });
 
@@ -128,7 +131,7 @@ function writeComm(comm_text, code){
     var msg = {}
     msg.code = code || "INFO";
     msg.message = comm_text;
-    comm_socket.write(JSON.stringify(msg));
+    comm_socket.write('\u0000'+JSON.stringify(msg)+'\u0000');
   }
 }
 

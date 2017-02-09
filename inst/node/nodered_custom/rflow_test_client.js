@@ -21,7 +21,7 @@ client.on('close', function() {
 });
 
 process.stdin.on('data', function (chunk) {
-
+  var nullUnicode = '\u0000';
   var sendCommand = {};
   if(chunk.indexOf('{') < 0){
 		if(chunk.indexOf('file://') >=0){
@@ -35,6 +35,7 @@ process.stdin.on('data', function (chunk) {
     sendCommand = JSON.parse(chunk.toString());
   }
 	var str = JSON.stringify(sendCommand);
+	str += nullUnicode;
 	console.log("SEND LENGTH:"+str.length);
   client.write(str);
 });
