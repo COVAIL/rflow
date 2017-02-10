@@ -51,7 +51,6 @@ var tcp_server = net.createServer(function(socket) {
   socket.write('\u0000'+"Hello, I am the RFlow TCP Server. I like to talk JSON."+'\u0000')
   socket.on('error', function(data){
     console.log('ERROR::RECEIVED DATA::'+ data);
-    writeComm('ERROR::'+data);
   });
   var fullData = '';
 	socket.on('data', function(data){
