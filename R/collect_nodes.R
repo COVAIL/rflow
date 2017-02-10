@@ -89,8 +89,10 @@ fun_doc <- function(fun_name, pkg) {
 #' @param fun_args Data frame holding names and values of arguments
 #' @return Character scalar representing a function signature
 fun_signature <- function(func_name, func_args) {
-  c(as.name(func_name), setNames(as.list(func_args$value), func_args$name)) %>% 
-    as.call
+  as.call(c(
+    as.name(func_name),
+    setNames(as.list(func_args$value), func_args$name)
+  ))
 }
 
 

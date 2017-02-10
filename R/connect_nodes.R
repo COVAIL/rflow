@@ -29,9 +29,9 @@ rflow_start <- function(viewer = TRUE, comm_port = "1338") {
   node_url <- paste("http://127.0.0.1", node_port, sep = ":")
   
   print("before cmd")
-  system2(cmd, args, wait = FALSE, stdout = FALSE)
+  system2(cmd, args, wait = FALSE, stdout = "")
   print("after cmd")
-  Sys.sleep(3)
+  Sys.sleep(2) # maybe while loop
   print("socket")
   con <- socketConnection(host = "127.0.0.1", port = comm_port, open = "r+b")
   print("after socket")

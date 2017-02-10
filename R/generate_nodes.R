@@ -24,7 +24,7 @@ generate_nodes <- function(pkg) {
       nodes = data_frame(
         name = names,
         args = args,
-        #doc = docs,
+        doc = docs,
         category = pkg
       )
     )
@@ -43,19 +43,27 @@ generate_nodes <- function(pkg) {
 #' @importFrom rstudioapi insertText
 #' @importFrom jsonlite fromJSON
 #' @export
-generate_code <- function() {
+generate_code <- function(outputVar = "", operator = c("<-", "%>%", "+")[1],
+                          eval = FALSE) {
   json_out <- '{"command" : "RUN_FLOWS", "node_names" : []}'
   rflow_send(json_out)
   Sys.sleep(.5)
   json_in <- rflow_receive()
+  Sys.sleep(.5)
   funs <- fromJSON(json_in)$message$funcs
   signatures <- mapply(fun_signature, funs$name, funs$args, USE.NAMES = FALSE)
+  if (nchar(outputVar) > 0) outputVar <- paste0(outputVar, " <- ")
   
-  code <- paste0(funs$outputVar, " <- ", signatures, "\n", collapse = "") %>% 
+  code <- switch(
+    operator,
+    "<-" = paste0(funs$outputVar, " <- ", signatures, collapse = "\n"),
+    "%>%" = paste0(outputVar, paste(signatures, collapse = " %>%\n  ")),
+    "+" = paste0(outputVar, paste(signatures, collapse = " +\n  "))
+    ) %>% 
     gsub('\\\\"', "'", .) %>% 
     gsub('\"{2,2}', "''", .) %>% 
     gsub('\"', "", .)
-  insertText(Inf, code)
+  ifelse(eval, eval(parse(text = code)), insertText(Inf, code))
 }
 
 
