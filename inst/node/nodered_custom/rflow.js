@@ -73,7 +73,7 @@ var tcp_server = net.createServer(function(socket) {
                   );
                   break;
               case 'STOP_RFLOW':
-                  writeComm('Received STOP_RFLOW command.  Good Bye!');
+                  console.log('Received STOP_RFLOW command.  Good Bye!');
                   process.exit();
                   break;
               case 'RUN_FLOWS':
@@ -85,7 +85,6 @@ var tcp_server = net.createServer(function(socket) {
                   events.emit('rstudio-in', {"node_names":node_names});
                   break;
               case 'GENERATE_NODES':
-                  writeComm('Received GENERATE_NODES command.');
                   if(recv.module){
                     var moduleName = recv.module.name;
                     var modulePath = path.join(user_directory,moduleName);
@@ -95,17 +94,14 @@ var tcp_server = net.createServer(function(socket) {
                         function(){
                           createNodes(recv.module, function(){
                             RED.nodes.installModule(modulePath);
-                            writeComm('Installed Module:'+modulePath);
                           })
                         }
                       )
                     } else {
                       createNodes(recv.module, function(){
                         RED.nodes.installModule(modulePath);
-                        writeComm('Installed Module:'+modulePath);
                       });
                     }
-                    writeComm('Generated new NodeRed Nodes in Directory');
                   } else {
                     writeComm('Please provide a module JSON object in the JSON message', ERROR_CODE);
                   }
