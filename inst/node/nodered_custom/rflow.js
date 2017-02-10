@@ -55,7 +55,6 @@ var tcp_server = net.createServer(function(socket) {
   var fullData = '';
 	socket.on('data', function(data){
     fullData += data.toString('utf8');
-    console.log(fullData);
 
     if(fullData.charCodeAt(fullData.length-1) == 0){
       try{
