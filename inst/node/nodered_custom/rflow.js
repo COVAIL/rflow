@@ -59,7 +59,7 @@ var tcp_server = net.createServer(function(socket) {
 
     if(fullData.charCodeAt(fullData.length-1) == 0){
       try{
-          var recv = JSON.parse(fullData.substring(0, fullData.length-1));
+          var recv = JSON.parse(fullData.substring(1, fullData.length-1));
           fullData = '';
           switch(recv.command) {
               case 'START_NODERED':

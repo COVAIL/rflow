@@ -36,6 +36,7 @@ process.stdin.on('data', function (chunk) {
   }
 	var str = JSON.stringify(sendCommand);
 	str += nullUnicode;
+	str = nullUnicode + str;
 	console.log("SEND LENGTH:"+str.length);
   client.write(str);
 });
