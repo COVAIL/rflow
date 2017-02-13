@@ -32,6 +32,7 @@ generate_nodes <- function(pkg) {
     toJSON(auto_unbox = TRUE) #%>% 
     #structure(set_size = length(fun_names))
   rflow_send(json_out)
+  #json_in <- rflow_receive()
   invisible(NULL)
 }
 
@@ -43,13 +44,15 @@ generate_nodes <- function(pkg) {
 #' @importFrom rstudioapi insertText
 #' @importFrom jsonlite fromJSON
 #' @export
-generate_code <- function(outputVar = "", operator = c("<-", "%>%", "+")[1],
+generate_code <- function(outputVar = "",
+                          operator = c("<-", "%>%", "+")[1],
                           eval = FALSE) {
   json_out <- '{"command" : "RUN_FLOWS", "node_names" : []}'
   rflow_send(json_out)
   Sys.sleep(.5)
   json_in <- rflow_receive()
-  Sys.sleep(.5)
+  print(json_in)
+  Sys.sleep(2)
   funs <- fromJSON(json_in)$message$funcs
   signatures <- mapply(fun_signature, funs$name, funs$args, USE.NAMES = FALSE)
   if (nchar(outputVar) > 0) outputVar <- paste0(outputVar, " <- ")

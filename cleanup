@@ -1,0 +1,8 @@
+cd node/nodered_custom
+npm install
+
+cd rflow-rstudio-nodes 
+npm link
+
+cd ..
+npm link rflow-rstudio-nodes
