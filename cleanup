@@ -1,9 +1,18 @@
 #!/bin/sh
-cd node/nodered_custom
+
+PKGNAME=$(sed -n "s/Package: *\([^ ]*\)/\1/p" DESCRIPTION)
+PKGVERS=$(sed -n "s/Version: *\([^ ]*\)/\1/p" DESCRIPTION)
+PKGSRC=$(pwd)
+PKGDIR=$(Rscript -e "cat(.libPaths()[1])")
+
+echo $PKGNAME
+echo $PKGVERS
+echo $PKGSRC
+echo $PKGDIR
+
+cd $PKGDIR/$PKGNAME/node/nodered_custom
 npm install
-
-cd rflow-rstudio-nodes 
+cd $PKGDIR/$PKGNAME/node/nodered_custom/rflow-rstudio-nodes
 npm link
-
-cd ..
+cd $PKGDIR/$PKGNAME/node/nodered_custom
 npm link rflow-rstudio-nodes
