@@ -1,12 +1,7 @@
 #!/bin/sh
 
-PKGNAME=$(sed -n "s/Package: *\([^ ]*\)/\1/p" DESCRIPTION)
-PKGVERS=$(sed -n "s/Version: *\([^ ]*\)/\1/p" DESCRIPTION)
-PKGSRC=$(pwd)
 PKGDIR=$(Rscript -e "cat(.libPaths()[1])")
-
-echo $PKGNAME
-echo $PKGVERS
+PKGNAME="nodegen"
 echo $PKGSRC
 echo $PKGDIR
 
