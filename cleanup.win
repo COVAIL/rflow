@@ -1,0 +1,13 @@
+#!/bin/sh
+
+PKGDIR=$(Rscript -e "cat(.libPaths()[1])")
+PKGNAME="nodegen"
+echo $PKGSRC
+echo $PKGDIR
+
+cd $PKGDIR/$PKGNAME/node/nodered_custom
+npm install
+cd $PKGDIR/$PKGNAME/node/nodered_custom/rflow-rstudio-nodes
+npm link
+cd $PKGDIR/$PKGNAME/node/nodered_custom
+npm link rflow-rstudio-nodes
