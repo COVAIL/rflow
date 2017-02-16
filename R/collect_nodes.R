@@ -12,7 +12,7 @@ fun_check <- function(fun_name, pkg, ns) {
   doc <- eval(substitute(help(fun_name, pkg), list(pkg = pkg)))
   fun <- ns[[fun_name]]
   test <- is.function(fun) && !is.null(formals(fun)) && length(doc)
-  if (test) return(TRUE) else FALSE
+  if (isTRUE(test)) return(TRUE) else FALSE
 }
 
 #' @title Get Names of User-facing Functions
@@ -45,14 +45,8 @@ fun_args <- function(fun_name, pkg) {
     lapply(function(fun) {
       formals(fun) %>% 
         lapply(deparse
-          # function(x) {
-          #   if (is.symbol(x) || is.call(x) || is.null(x))
-          #     return(deparse(x))
-          #   else 
-          #     x
-          # }
         ) %>% 
-        data_frame(name = names(.), defaultValue = .) #[nchar(.) > 0]
+        data_frame(name = names(.), defaultValue = .)
     }
     ) %>% 
     setNames(NULL)
@@ -85,13 +79,13 @@ fun_doc <- function(fun_name, pkg) {
 
 #' @title Build Function Signature
 #' @description Takes function name and argument names and values to build a signature
-#' @param func_name Character scalar giving function name
+#' @param fun_name Character scalar giving function name
 #' @param fun_args Data frame holding names and values of arguments
 #' @return Character scalar representing a function signature
-fun_signature <- function(func_name, func_args) {
+fun_signature <- function(fun_name, fun_args) {
   as.call(c(
-    as.name(func_name),
-    setNames(as.list(func_args$value), func_args$name)
+    as.name(fun_name),
+    setNames(as.list(fun_args$value), fun_args$name)
   ))
 }
 

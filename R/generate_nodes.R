@@ -2,17 +2,20 @@
 #' @description Generates a JSON with function names, arguments, default values, and
 #'   manuals for all user-facing functions in a package
 #' @inheritParams fun_check
+#' @return Translate package functions to nodes and return NULL invisibly
 #' @importFrom jsonlite toJSON
+#' @importFrom utils packageVersion
 #' @export
-generate_nodes <- function(pkg) {
+rflow_pkgnodes <- function(pkg) {
+  stopifnot(is.character(pkg), pkg %in% installed.packages()[, "Package"])
+  
   names <- fun_name(pkg)
   args <- fun_args(names, pkg)
   docs <- fun_doc(names, pkg)
-  
-  #set_name <- paste("node-set", pkg, sep = "-")
   module_name <- paste("rflow", pkg, "gen", "nodes", sep = "-")
   pkg_version <- unlist(packageVersion("mlr"))
-  json_out <- list(
+  
+  request <- list(
     command = "GENERATE_NODES",
     module = list(
       name = module_name,
@@ -29,31 +32,32 @@ generate_nodes <- function(pkg) {
       )
     )
     ) %>%
-    toJSON(auto_unbox = TRUE) #%>% 
-    #structure(set_size = length(fun_names))
-  rflow_send(json_out)
-  #json_in <- rflow_receive()
+    toJSON(auto_unbox = TRUE)
+    
+  rflow_send(request)
   invisible(NULL)
 }
 
 
 #' @title Generate R code from nodes
-#' @description Takes a connection to the node app and inserts R code corresponding to nodes
-#' @param tcp_msg Character scalar holding a message from the tcp server in JSON format
-#' @return Character scalar holding the generated code
+#' @description Takes a connection to the node app and inserts R code 
+#'   corresponding to nodes
+#' @param outputVar Character scalar with name of the variable to capture the output
+#' @param operator Character scalar giving an operator to compose the function calls
+#' @return Inserts generated code as text and returns NULL invisibly
 #' @importFrom rstudioapi insertText
 #' @importFrom jsonlite fromJSON
 #' @export
-generate_code <- function(outputVar = "",
-                          operator = c("<-", "%>%", "+")[1],
-                          eval = FALSE) {
-  json_out <- '{"command" : "RUN_FLOWS", "node_names" : []}'
-  rflow_send(json_out)
+rflow_code <- function(outputVar = "", operator = c("<-", "%>%", "+")[1]) {
+  stopifnot(is.character(outputVar), operator %in% c("<-", "%>%", "+"))
+  
+  request <- make_request("RUN_FLOWS") #'{"command" : "RUN_FLOWS", "node_names" : []}'
+  rflow_send(request)
   Sys.sleep(.5)
-  json_in <- rflow_receive()
-  print(json_in)
+  response <- rflow_receive()
+  print(response)
   Sys.sleep(2)
-  funs <- fromJSON(json_in)$message$funcs
+  funs <- fromJSON(response)$message$funcs
   signatures <- mapply(fun_signature, funs$name, funs$args, USE.NAMES = FALSE)
   if (nchar(outputVar) > 0) outputVar <- paste0(outputVar, " <- ")
   
@@ -66,8 +70,43 @@ generate_code <- function(outputVar = "",
     gsub('\\\\"', "'", .) %>% 
     gsub('\"{2,2}', "''", .) %>% 
     gsub('\"', "", .)
-  ifelse(eval, eval(parse(text = code)), insertText(Inf, code))
+  insertText(Inf, code)
+  invisible(NULL)
 }
+
+#' @title Evaluate R code from nodes
+#' @description Takes a connection to the node app and evaluates R code 
+#'   corresponding to nodes
+#' @param tcp_msg Character scalar holding a message from the tcp server in JSON format
+#' @return Final return value of the generated code
+#' @importFrom rstudioapi insertText
+#' @importFrom jsonlite fromJSON
+#' @export
+rflow_eval <- function(operator = c("<-", "%>%", "+")[1]) {
+  stopifnot(operator %in% c("<-", "%>%", "+"))
+  
+  request <- make_request("RUN_FLOWS") #'{"command" : "RUN_FLOWS", "node_names" : []}'
+  rflow_send(request)
+  Sys.sleep(.5)
+  response <- rflow_receive()
+  print(response)
+  Sys.sleep(2)
+  funs <- fromJSON(response)$message$funcs
+  signatures <- mapply(fun_signature, funs$name, funs$args, USE.NAMES = FALSE)
+  
+  code <- switch(
+    operator,
+    "<-" = paste0(funs$outputVar, " <- ", signatures, collapse = "\n"),
+    "%>%" = paste0(paste(signatures, collapse = " %>%\n  ")),
+    "+" = paste0(paste(signatures, collapse = " +\n  "))
+    ) %>% 
+    gsub('\\\\"', "'", .) %>% 
+    gsub('\"{2,2}', "''", .) %>% 
+    gsub('\"', "", .)
+  result <- eval(parse(text = code))
+  result
+}
+
 
 
 

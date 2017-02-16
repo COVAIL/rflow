@@ -4,10 +4,10 @@
 \alias{rflow_end}
 \title{End RFlow}
 \usage{
-rflow_end(con)
+rflow_end()
 }
 \value{
-NULL returned invisibly
+Remove connection and return NULL invisibly
 }
 \description{
 Shuts down node-red environment, communication server and

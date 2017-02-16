@@ -4,18 +4,16 @@
 \alias{rflow_start}
 \title{Start RFlow}
 \usage{
-rflow_start(viewer = TRUE, comm_port = "1338")
+rflow_start(viewer = TRUE, tcp_port = 1338)
 }
 \arguments{
 \item{viewer}{Logical scalar determining whether to open the node-red environment
 in the Rstudio viewer or a browser window}
 
-\item{comm_port}{Character scalar giving communication server port}
-
-\item{node_port}{Character scalar giving node-red environment port}
+\item{tcp_port}{Character scalar giving communication server port}
 }
 \value{
-Connection object for the communication server
+Opens Nodered app in the viewer or browser, and returns NULL
 }
 \description{
 Takes app and communication ports to start

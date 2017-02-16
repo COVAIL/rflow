@@ -4,17 +4,16 @@
 \alias{rflow_send}
 \title{JSON Writer}
 \usage{
-rflow_send(json_out)
+rflow_send(request)
 }
 \arguments{
-\item{pkg_nodes}{Character scalar holding JSON representation of nodes}
-
-\item{con}{Connection object point to node application's tcp server}
+\item{request}{Character scalar holding JSON representation of the request}
 }
 \value{
-NULL invisibly
+Send request to the app and NULL invisibly
 }
 \description{
-Send a JSON Representation of User-facing Functions to the NodeRed App
+Send a JSON Representation of User-facing Functions to
+  the NodeRed App
 }
 

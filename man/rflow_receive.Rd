@@ -4,15 +4,13 @@
 \alias{rflow_receive}
 \title{JSON Reader}
 \usage{
-rflow_receive(con)
-}
-\arguments{
-\item{con}{Connection object point to node application's tcp server}
+rflow_receive()
 }
 \value{
 Character scalar holding a message in JSON format
 }
 \description{
-Receive a JSON Representation of Generated Functions from the NodeRed App
+Receive a JSON Representation of Generated Functions from the
+  NodeRed App
 }
 

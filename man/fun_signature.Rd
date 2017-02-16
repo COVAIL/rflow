@@ -4,10 +4,10 @@
 \alias{fun_signature}
 \title{Build Function Signature}
 \usage{
-fun_signature(func_name, func_args)
+fun_signature(fun_name, fun_args)
 }
 \arguments{
-\item{func_name}{Character scalar giving function name}
+\item{fun_name}{Character scalar giving function name}
 
 \item{fun_args}{Data frame holding names and values of arguments}
 }

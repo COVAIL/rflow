@@ -1,2 +1,10 @@
 ^.*\.Rproj$
 ^\.Rproj\.user$
+^inst/node/nodered_custom/lib$
+^inst/node/nodered_custom/node_modules$
+^inst/node/nodered_custom/.*gen-nodes$
+^inst/node/nodered_custom/\.node-red$
+^inst/node/nodered_custom/\.config\.json$
+^inst/node/nodered_custom/\.flows_.*$
+^inst/node/nodered_custom/flows_.*$
+^inst/node/nodered_custom/.*_test_.*$
