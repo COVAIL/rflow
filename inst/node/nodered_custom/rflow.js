@@ -66,7 +66,7 @@ var tcp_server = net.createServer(function(socket) {
                   RED.start().then(
                     function(){
                       writeComm('LOADED_NODERED');
-                      events.on('rstudio-out', function(msg){
+                      events.on('rflow-out', function(msg){
                           writeComm(msg);
                       })
                     }
