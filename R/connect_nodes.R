@@ -3,8 +3,12 @@
 #' holds connection object
 cache <- new.env()
 
-make_request <- function(msg_out) {
-  sprintf('{"command" : "%s"}', msg_out)
+#' constructs requests in json format
+make_request <- function(msg_out, flows = "") {
+  sprintf(
+    '{"command" : "%s", "node_names" : [%s]}',
+    msg_out, paste0('"', flows, '"', collapse = ",")
+  )
 }
 
 #' @title Start RFlow
@@ -18,6 +22,7 @@ make_request <- function(msg_out) {
 #' @export
 rflow_start <- function(viewer = TRUE, tcp_port = 1338L) {
   stopifnot(is.logical(viewer), is.integer(tcp_port))
+  
   cwd <- getwd()
   path <- system.file("node/nodered_custom", package = "nodegen")
   setwd(path)
@@ -65,7 +70,6 @@ rflow_start <- function(viewer = TRUE, tcp_port = 1338L) {
   }
   if (viewer) viewer(app_url) else getOption("browser")(app_url)
   setwd(cwd)
-  #assign("con", con, envir = cache)
   invisible(NULL)
 }
 
@@ -85,9 +89,11 @@ rflow_send <- function(request) {
 #'   NodeRed App
 #' @return Character scalar holding a message in JSON format
 rflow_receive <- function() {
-  msg_in <- readBin(cache$con, raw(), 1e5)
-  nul_indx <- which(msg_in == as.raw(0x00))
-  response <- rawToChar(msg_in[-nul_indx])
+  msg_header <- readBin(cache$con, raw(), 11)
+  body_len <- as.integer(rawToChar(msg_header[-1]))
+  msg_body <- readBin(cache$con, raw(), body_len + 1L) #unlist(replicate(1e4, readBin(cache$con, raw(), 1)))
+  #nul_indx <- which(msg_in == as.raw(0x00))
+  response <- rawToChar(msg_body[-(body_len + 1L)])
   response
 }
 

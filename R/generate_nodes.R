@@ -13,7 +13,7 @@ rflow_pkgnodes <- function(pkg) {
   args <- fun_args(names, pkg)
   docs <- fun_doc(names, pkg)
   module_name <- paste("rflow", pkg, "gen", "nodes", sep = "-")
-  pkg_version <- unlist(packageVersion("mlr"))
+  pkg_version <- unlist(packageVersion(pkg))
   
   request <- list(
     command = "GENERATE_NODES",
@@ -22,7 +22,7 @@ rflow_pkgnodes <- function(pkg) {
       version = ifelse(
         length(pkg_version) == 2,
         paste(c(pkg_version, "0"), collapse = "."),
-        paste(pkg_version, collapse = ".")
+        paste(pkg_version[1:3], collapse = ".")
       ),
       nodes = data_frame(
         name = names,
@@ -38,26 +38,8 @@ rflow_pkgnodes <- function(pkg) {
   invisible(NULL)
 }
 
-
-#' @title Generate R code from nodes
-#' @description Takes a connection to the node app and inserts R code 
-#'   corresponding to nodes
-#' @param outputVar Character scalar with name of the variable to capture the output
-#' @param operator Character scalar giving an operator to compose the function calls
-#' @return Inserts generated code as text and returns NULL invisibly
-#' @importFrom rstudioapi insertText
-#' @importFrom jsonlite fromJSON
-#' @export
-rflow_code <- function(outputVar = "", operator = c("<-", "%>%", "+")[1]) {
-  stopifnot(is.character(outputVar), operator %in% c("<-", "%>%", "+"))
-  
-  request <- make_request("RUN_FLOWS") #'{"command" : "RUN_FLOWS", "node_names" : []}'
-  rflow_send(request)
-  Sys.sleep(.5)
-  response <- rflow_receive()
-  print(response)
-  Sys.sleep(2)
-  funs <- fromJSON(response)$message$funcs
+#' Converts table of function information into lines of code
+as_code <- function(outputVar, operator, funs) {
   signatures <- mapply(fun_signature, funs$name, funs$args, USE.NAMES = FALSE)
   if (nchar(outputVar) > 0) outputVar <- paste0(outputVar, " <- ")
   
@@ -70,6 +52,48 @@ rflow_code <- function(outputVar = "", operator = c("<-", "%>%", "+")[1]) {
     gsub('\\\\"', "'", .) %>% 
     gsub('\"{2,2}', "''", .) %>% 
     gsub('\"', "", .)
+  code
+}
+
+#' @title Generate R code from nodes
+#' @description Takes a connection to the node app and inserts R code 
+#'   corresponding to nodes
+#' @param outputVar Character scalar with name of the variable to capture the output
+#' @param operator Character scalar giving an operator to compose the function calls
+#' @return Inserts generated code as text and returns NULL invisibly
+#' @importFrom rstudioapi insertText
+#' @importFrom jsonlite fromJSON
+#' @export
+rflow_code <- function(outputVar = "", operator = c("<-", "%>%", "+")[1], flows = "") {
+  stopifnot(
+    all(is.character(outputVar)),
+    operator %in% c("<-", "%>%", "+"),
+    all(is.character(flows))
+  )
+  
+  request <- make_request("RUN_FLOWS", flows)
+  rflow_send(request)
+  Sys.sleep(.5)
+  response <- rflow_receive()
+  print(response)
+  Sys.sleep(2)
+  funs <- fromJSON(response)$message$funcs
+  signatures <- mapply(fun_signature, funs$name, funs$args, USE.NAMES = FALSE)
+  if (nchar(outputVar) > 0) outputVar <- paste0(outputVar, " <- ")
+
+  code <- switch(
+    operator,
+    "<-" = paste0(funs$outputVar, " <- ", signatures, collapse = "\n"),
+    "%>%" = paste0(outputVar, paste(signatures, collapse = " %>%\n  ")),
+    "+" = paste0(outputVar, paste(signatures, collapse = " +\n  "))
+    ) %>%
+    gsub('\\\\"', "'", .) %>%
+    gsub('\"{2,2}', "''", .) %>%
+    gsub('\"', "", .)
+  # code <- paste0(
+  #   mapply(as_code, outputVar, operator, funs, SIMPLIFY = TRUE), 
+  #   collapse = "\n"
+  # )
   insertText(Inf, code)
   invisible(NULL)
 }
@@ -82,10 +106,10 @@ rflow_code <- function(outputVar = "", operator = c("<-", "%>%", "+")[1]) {
 #' @importFrom rstudioapi insertText
 #' @importFrom jsonlite fromJSON
 #' @export
-rflow_eval <- function(operator = c("<-", "%>%", "+")[1]) {
-  stopifnot(operator %in% c("<-", "%>%", "+"))
+rflow_eval <- function(operator = c("<-", "%>%", "+")[1], flows = "") {
+  stopifnot(operator %in% c("<-", "%>%", "+"), all(is.character(flows)))
   
-  request <- make_request("RUN_FLOWS") #'{"command" : "RUN_FLOWS", "node_names" : []}'
+  request <- make_request("RUN_FLOWS", flows)
   rflow_send(request)
   Sys.sleep(.5)
   response <- rflow_receive()
