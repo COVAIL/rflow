@@ -35,6 +35,11 @@ process.stdin.on('data', function (chunk) {
     sendCommand = JSON.parse(chunk.toString());
   }
 	var str = JSON.stringify(sendCommand);
+	//append 0 padded prefix with length of 10 characters
+	var lenStr = str.length.toString()
+	lenStr = Array(11-lenStr.length).join('0')+lenStr
+	str = lenStr + str;
+
 	str += nullUnicode;
 	str = nullUnicode + str;
 	console.log("SEND LENGTH:"+str.length);
