@@ -63,14 +63,19 @@
               }
             }
             runs[run.uuid] = run;
-
+            var foundFlow = false;
             for(var i=0;i<run.flowNames.length;i++){
+              foundFlow = false;
               var flowMsg = JSON.parse(JSON.stringify(in_msg));
               for(var j=0;j<configNode.nodeNames.length; j++){
                 if(run.flowNames[i] == configNode.nodeNames[j].name){
+                  foundFlow = true;
                   flowMsg.RIn_RunUuid = run.uuid;
                   configNode.nodeNames[j].emit('input', flowMsg);
                 }
+              }
+              if(!foundFlow){
+                throw new Error("Flow not found? "+run.flowNames[i]);
               }
             }
 
