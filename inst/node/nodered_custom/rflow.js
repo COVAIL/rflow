@@ -58,7 +58,7 @@ var tcp_server = net.createServer(function(socket) {
 
     if(fullData.charCodeAt(fullData.length-1) == 0){
       try{
-          var recv = JSON.parse(fullData.substring(1, fullData.length-1));
+          var recv = JSON.parse(fullData.substring(11, fullData.length-1));
           fullData = '';
           switch(recv.command) {
               case 'START_NODERED':
@@ -66,7 +66,7 @@ var tcp_server = net.createServer(function(socket) {
                   RED.start().then(
                     function(){
                       writeComm('LOADED_NODERED');
-                      events.on('rstudio-out', function(msg){
+                      events.on('rflow-out', function(msg){
                           writeComm(msg);
                       })
                     }
@@ -125,7 +125,11 @@ function writeComm(comm_text, code){
     var msg = {}
     msg.code = code || "INFO";
     msg.message = comm_text;
-    comm_socket.write('\u0000'+JSON.stringify(msg)+'\u0000');
+    var stringMessage = JSON.stringify(msg);
+    //append 0 padded prefix with length of 10 characters
+    var lenStr = stringMessage.length.toString()
+    lenStr = Array(11-lenStr.length).join('0')+lenStr
+    comm_socket.write('\u0000'+lenStr+stringMessage+'\u0000');
   }
 }
 
