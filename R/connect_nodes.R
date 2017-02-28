@@ -112,12 +112,12 @@ rflow_receive <- function() {
 #' @importFrom tools pskill
 #' @export
 rflow_end <- function() {
-  con_status <- tryCatch(
-    isOpen(cache$con),
+  con_status <- tryCatch({
+    request <- make_request("STOP_RFLOW")
+    rflow_send(request)
+    close(cache$con)
+    },
     error = function(error) pskill(cache$pid)
   )
-  request <- make_request("STOP_RFLOW")
-  rflow_send(request)
-  close(cache$con)
-  invisible(NULL)
+  invisible(con_status)
 }
