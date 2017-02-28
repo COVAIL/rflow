@@ -48,7 +48,7 @@ var tcp_server = net.createServer(function(socket) {
   var msg = '';
   socket.setEncoding('utf8');
   comm_socket = socket;
-  socket.write('\u0000'+"Hello, I am the RFlow TCP Server. I like to talk JSON."+'\u0000')
+//  socket.write('\u0000'+"Hello, I am the RFlow TCP Server. I like to talk JSON."+'\u0000')
   socket.on('error', function(data){
     console.log('ERROR::RECEIVED DATA::'+ data);
   });
@@ -67,6 +67,7 @@ var tcp_server = net.createServer(function(socket) {
                     function(){
                       writeComm('LOADED_NODERED');
                       events.on('rflow-out', function(msg){
+                          console.log(msg);
                           writeComm(msg);
                       })
                     }
@@ -82,6 +83,8 @@ var tcp_server = net.createServer(function(socket) {
                   if(recv.node_names){
                     node_names = recv.node_names;
                   }
+                  console.log('rstudio in ran');
+                  console.log(JSON.stringify(recv));
                   events.emit('rstudio-in', {"node_names":node_names});
                   break;
               case 'GENERATE_NODES':

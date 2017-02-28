@@ -4,7 +4,7 @@
 \alias{rflow_eval}
 \title{Evaluate R code from nodes}
 \usage{
-rflow_eval(operator = c("<-", "\%>\%", "+")[1])
+rflow_eval(operator = c("<-", "\%>\%", "+")[1], flows = "")
 }
 \arguments{
 \item{tcp_msg}{Character scalar holding a message from the tcp server in JSON format}

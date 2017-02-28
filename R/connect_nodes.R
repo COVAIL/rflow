@@ -5,10 +5,16 @@ cache <- new.env()
 
 #' constructs requests in json format
 make_request <- function(msg_out, flows = "") {
-  sprintf(
+  request <- sprintf(
     '{"command" : "%s", "node_names" : [%s]}',
-    msg_out, paste0('"', flows, '"', collapse = ",")
+    msg_out,
+    ifelse(
+      nchar(flows)[1] == 0,
+      "",
+      paste0('"', flows, '"', collapse = ",")
+    )
   )
+  request
 }
 
 #' @title Start RFlow
@@ -49,7 +55,7 @@ rflow_start <- function(viewer = TRUE, tcp_port = 1338L) {
   print("after socket")
   Sys.sleep(3)
   print("start msg")
-  response <- rflow_receive() #rawToChar(readBin(con, raw(), 1e3))
+  #response <- rflow_receive() #rawToChar(readBin(con, raw(), 1e3))
   request <- make_request("START_NODERED")
   #Sys.sleep(3)
   print("start node")
@@ -64,7 +70,7 @@ rflow_start <- function(viewer = TRUE, tcp_port = 1338L) {
     if (nchar(response) == 0) next
     response <- fromJSON(response)
     if (response$message == "LOADED_NODERED") break
-    if (as.double(Sys.time() - start_time) > 10) 
+    if (as.double(Sys.time() - start_time) > 10)
       return(message("Unable to start NodeRed"))
     print(as.double(Sys.time() - start_time))
   }
@@ -79,7 +85,8 @@ rflow_start <- function(viewer = TRUE, tcp_port = 1338L) {
 #' @param request Character scalar holding JSON representation of the request
 #' @return Send request to the app and NULL invisibly
 rflow_send <- function(request) {
-  msg_out <- c(as.raw(0x00), charToRaw(request), as.raw(0x00))
+  header <- sprintf("%010d", nchar(request))
+  msg_out <- c(as.raw(0x00), charToRaw(header), charToRaw(request), as.raw(0x00))
   writeBin(msg_out, cache$con)
   invisible(NULL)
 }

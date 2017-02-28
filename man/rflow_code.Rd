@@ -4,7 +4,8 @@
 \alias{rflow_code}
 \title{Generate R code from nodes}
 \usage{
-rflow_code(outputVar = "", operator = c("<-", "\%>\%", "+")[1])
+rflow_code(outputVar = "", operator = c("<-", "\%>\%", "+")[1],
+  flows = "")
 }
 \arguments{
 \item{outputVar}{Character scalar with name of the variable to capture the output}

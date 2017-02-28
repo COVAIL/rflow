@@ -73,27 +73,16 @@ rflow_code <- function(outputVar = "", operator = c("<-", "%>%", "+")[1], flows 
   
   request <- make_request("RUN_FLOWS", flows)
   rflow_send(request)
-  Sys.sleep(.5)
+  Sys.sleep(2)
   response <- rflow_receive()
   print(response)
   Sys.sleep(2)
   funs <- fromJSON(response)$message$funcs
-  signatures <- mapply(fun_signature, funs$name, funs$args, USE.NAMES = FALSE)
-  if (nchar(outputVar) > 0) outputVar <- paste0(outputVar, " <- ")
 
-  code <- switch(
-    operator,
-    "<-" = paste0(funs$outputVar, " <- ", signatures, collapse = "\n"),
-    "%>%" = paste0(outputVar, paste(signatures, collapse = " %>%\n  ")),
-    "+" = paste0(outputVar, paste(signatures, collapse = " +\n  "))
-    ) %>%
-    gsub('\\\\"', "'", .) %>%
-    gsub('\"{2,2}', "''", .) %>%
-    gsub('\"', "", .)
-  # code <- paste0(
-  #   mapply(as_code, outputVar, operator, funs, SIMPLIFY = TRUE), 
-  #   collapse = "\n"
-  # )
+  code <- paste0(
+    mapply(as_code, outputVar, operator, funs, SIMPLIFY = TRUE),
+    collapse = "\n"
+  )
   insertText(Inf, code)
   invisible(NULL)
 }

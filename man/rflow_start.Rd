@@ -4,7 +4,7 @@
 \alias{rflow_start}
 \title{Start RFlow}
 \usage{
-rflow_start(viewer = TRUE, tcp_port = 1338)
+rflow_start(viewer = TRUE, tcp_port = 1338L)
 }
 \arguments{
 \item{viewer}{Logical scalar determining whether to open the node-red environment

@@ -1,0 +1,29 @@
+0 info it worked if it ends with ok
+1 verbose cli [ '/usr/local/bin/node', '/usr/local/bin/npm', 'link' ]
+2 info using npm@3.10.3
+3 info using node@v6.4.0
+4 verbose linkPkg /Users/snikitin/Documents/quickInsights/nodegen/inst/node/nodered_custom/rflow-rstudio-nodes
+5 silly gentlyRm /usr/local/lib/node_modules/rflow-rstudio-nodes is being purged
+6 verbose gentlyRm don't care about contents; nuking /usr/local/lib/node_modules/rflow-rstudio-nodes
+7 verbose stack Error: EACCES: permission denied, symlink '/Users/snikitin/Documents/quickInsights/nodegen/inst/node/nodered_custom/rflow-rstudio-nodes' -> '/usr/local/lib/node_modules/rflow-rstudio-nodes'
+7 verbose stack     at Error (native)
+8 verbose cwd /Users/snikitin/Documents/quickInsights/nodegen/inst/node/nodered_custom/rflow-rstudio-nodes
+9 error Darwin 15.6.0
+10 error argv "/usr/local/bin/node" "/usr/local/bin/npm" "link"
+11 error node v6.4.0
+12 error npm  v3.10.3
+13 error path /Users/snikitin/Documents/quickInsights/nodegen/inst/node/nodered_custom/rflow-rstudio-nodes
+14 error code EACCES
+15 error errno -13
+16 error syscall symlink
+17 error Error: EACCES: permission denied, symlink '/Users/snikitin/Documents/quickInsights/nodegen/inst/node/nodered_custom/rflow-rstudio-nodes' -> '/usr/local/lib/node_modules/rflow-rstudio-nodes'
+17 error     at Error (native)
+17 error  { Error: EACCES: permission denied, symlink '/Users/snikitin/Documents/quickInsights/nodegen/inst/node/nodered_custom/rflow-rstudio-nodes' -> '/usr/local/lib/node_modules/rflow-rstudio-nodes'
+17 error     at Error (native)
+17 error   errno: -13,
+17 error   code: 'EACCES',
+17 error   syscall: 'symlink',
+17 error   path: '/Users/snikitin/Documents/quickInsights/nodegen/inst/node/nodered_custom/rflow-rstudio-nodes',
+17 error   dest: '/usr/local/lib/node_modules/rflow-rstudio-nodes' }
+18 error Please try running this command again as root/Administrator.
+19 verbose exit [ -13, true ]
