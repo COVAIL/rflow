@@ -89,7 +89,7 @@
 
         if(RED.events.listenerCount('rstudio-out') == 0){
           RED.events.on('rstudio-out', function(out_msg){
-            if(typeof out_msg.RIn_RunUuid != 'undefined'){
+            if(typeof runs[out_msg.RIn_RunUuid] != 'undefined'){
               if(typeof runs[out_msg.RIn_RunUuid].flowNamesReceived == 'undefined'){
                 runs[out_msg.RIn_RunUuid].flowNamesReceived = [];
                 runs[out_msg.RIn_RunUuid].outMessages = [];
