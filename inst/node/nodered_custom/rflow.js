@@ -5,8 +5,10 @@ var argv = require('yargs').argv;
 
 var getDirName = path.dirname;
 var replacePeriod = "JS_XX_JS";
-var replaceId = "JS_id_JS";
-
+//var replaceId = "JS_id_JS";
+var replacePrefix = "JS_";
+var replaceSuffix = "_JS";
+var reservedPropertyNames = ["type", "x", "y", "z","outputs", "wires", "id"];
 
 var user_directory = argv.dir || "./";
 var node_port = argv.node_port || 1337;
@@ -20,16 +22,16 @@ var ERROR_CODE = "ERROR_CODE";
 
 function RtoJS(argName){
   var JSname = argName;
-  if(argName == 'id'){
-    return replaceId;
+  if(reservedPropertyNames.indexOf(argName) > -1){
+    return replacePrefix + argName + replaceSuffix;
   }
   JSname = argName.split(".").join(replacePeriod);
-  return JSname
+  return JSname;
 }
 function JStoR(jsArgName){
   var argName = jsArgName;
-  if(jsArgName == replaceId){
-    return "id";
+  if(jsArgName.startsWith(replacePrefix) && jsArgName.endsWith(replaceSuffix)){
+    return jsArgName.substring(replacePrefix.length, jsArgName.length-(replacePrefix.length+replaceSuffix.length));
   }
   argName = jsArgName.split(replacePeriod).join(".");
   return argName;
