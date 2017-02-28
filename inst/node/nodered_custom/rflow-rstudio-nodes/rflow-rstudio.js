@@ -64,14 +64,19 @@
             }
             runs[run.uuid] = run;
             var foundFlow = false;
+            var processedFlows = [];
+            for(var x=0;x<configNode.nodeNames.length;x++) { processedFlows.push(false); }
+
             for(var i=0;i<run.flowNames.length;i++){
               foundFlow = false;
               var flowMsg = JSON.parse(JSON.stringify(in_msg));
               for(var j=0;j<configNode.nodeNames.length; j++){
-                if(run.flowNames[i] == configNode.nodeNames[j].name){
+                if(!processedFlows[j] && run.flowNames[i] == configNode.nodeNames[j].name){
                   foundFlow = true;
+                  processedFlows[j] = true
                   flowMsg.RIn_RunUuid = run.uuid;
                   configNode.nodeNames[j].emit('input', flowMsg);
+                  break;
                 }
               }
               if(!foundFlow){
@@ -92,13 +97,30 @@
               runs[out_msg.RIn_RunUuid].flowNamesReceived.push(out_msg.RIn_NodeName);
               runs[out_msg.RIn_RunUuid].outMessages.push(out_msg);
               if(runs[out_msg.RIn_RunUuid].flowNamesReceived.length == runs[out_msg.RIn_RunUuid].flowNames.length){
-                RED.events.emit('rflow-out', runs[out_msg.RIn_RunUuid].outMessages);
+                var returnFlows = [];
+                var orderedFlows = runs[out_msg.RIn_RunUuid].flowNames;
+                var processedFlows = [];
+
+                for(var i=0;i<orderedFlows.length;i++) { processedFlows.push(false); }
+
+
+                runs[out_msg.RIn_RunUuid].outMessages.forEach(function(outMsg){
+                  for(var i=0;i<orderedFlows.length; i++){
+                    if(orderedFlows[i] == outMsg.RIn_NodeName && !processedFlows[i]){
+                      returnFlows[i] = outMsg;
+                      processedFlows[i] = true;
+                      break;
+                    }
+                  }
+                });
+
+                RED.events.emit('rflow-out', returnFlows);
                 delete runs[out_msg.RIn_RunUuid]
               }
             } else {
               var out = [];
               out.push(out_msg);
-              RED.events.emit('rflow-out', out_msg);
+              RED.events.emit('rflow-out', out);
             }
 
 
