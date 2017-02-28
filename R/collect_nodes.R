@@ -23,7 +23,7 @@ fun_check <- function(fun_name, pkg, ns) {
 fun_name <- function(pkg) {
   ns <- getNamespace(pkg)
   fun_name <- getNamespaceExports(ns)
-  fun_name <- fun_name[grepl("^%", fun_name)]
+  fun_name <- fun_name[!grepl("^%", fun_name)]
   tests <- fun_name %>% 
     lapply(fun_check, pkg, ns) %>% 
     unlist

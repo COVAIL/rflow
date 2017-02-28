@@ -45,7 +45,8 @@ rflow_start <- function(viewer = TRUE, tcp_port = 1338L) {
   app_url <- paste("http://127.0.0.1", app_port, sep = ":")
   
   print("before cmd")
-  exec_background(cmd, args)
+  pid <- exec_background(cmd, args)
+  assign("pid", pid, envir = cache)
   #system2(cmd, args, wait = FALSE, stdout = "")
   print("after cmd")
   Sys.sleep(2) # maybe while loop
@@ -108,8 +109,13 @@ rflow_receive <- function() {
 #' @description Shuts down node-red environment, communication server and
 #'   cleans up connection
 #' @return Remove connection and return NULL invisibly
+#' @importFrom tools pskill
 #' @export
 rflow_end <- function() {
+  con_status <- tryCatch(
+    isOpen(cache$con),
+    error = function(error) pskill(cache$pid)
+  )
   request <- make_request("STOP_RFLOW")
   rflow_send(request)
   close(cache$con)

@@ -81,7 +81,7 @@ rflow_code <- function(outputVar = "", operator = c("<-", "%>%", "+")[1], flows 
 
   code <- paste0(
     mapply(as_code, outputVar, operator, funs, SIMPLIFY = TRUE),
-    collapse = "\n"
+    collapse = "\n\n"
   )
   insertText(Inf, code)
   invisible(NULL)
@@ -105,17 +105,11 @@ rflow_eval <- function(operator = c("<-", "%>%", "+")[1], flows = "") {
   print(response)
   Sys.sleep(2)
   funs <- fromJSON(response)$message$funcs
-  signatures <- mapply(fun_signature, funs$name, funs$args, USE.NAMES = FALSE)
   
-  code <- switch(
-    operator,
-    "<-" = paste0(funs$outputVar, " <- ", signatures, collapse = "\n"),
-    "%>%" = paste0(paste(signatures, collapse = " %>%\n  ")),
-    "+" = paste0(paste(signatures, collapse = " +\n  "))
-    ) %>% 
-    gsub('\\\\"', "'", .) %>% 
-    gsub('\"{2,2}', "''", .) %>% 
-    gsub('\"', "", .)
+  code <- paste0(
+    mapply(as_code, outputVar, operator, funs, SIMPLIFY = TRUE),
+    collapse = "\n\n"
+  )
   result <- eval(parse(text = code))
   result
 }
