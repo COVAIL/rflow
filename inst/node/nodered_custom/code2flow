@@ -1,0 +1,106 @@
+{
+  "command": "GENERATE_FLOW",
+  "module": {
+    "name": "cbuscollab-tools-gen-nodes",
+    "version": "0.0.1",
+    "nodes": [
+      {
+        "id":"65c92df4-5964-4248-ad3f-2a10d97a7160",
+        "name": "loadRdMacros",
+        "category": "tools-gen",
+        "args": [
+          {
+            "name": "file",
+            "defaultValue": "",
+            "value":"\"someFileName\""
+          },
+          {
+            "name": "macros",
+            "defaultValue": "TRUE"
+          }
+        ],
+        "doc": "Some documentation here",
+        "wires":[
+            [
+               "0ea2d456-ff73-11e6-bc64-92361f002671"
+            ]
+        ]
+      },
+      {
+        "id":"0ea2d456-ff73-11e6-bc64-92361f002671",
+        "name": "second",
+        "category": "tools-gen",
+        "args": [
+          {
+            "name": "file2",
+            "defaultValue": ""
+          },
+          {
+            "name": "macros2",
+            "defaultValue": "TRUE"
+          }
+        ],
+        "doc": "Some documentation here"
+      },
+      {
+        "name": "third",
+        "category": "tools-gen",
+        "args": [
+          {
+            "name": "file3",
+            "defaultValue": ""
+          },
+          {
+            "name": "macros3",
+            "defaultValue": "TRUE"
+          }
+        ],
+        "doc": "Some documentation here"
+      }
+    ]
+  }
+}
+
+
+
+
+[
+    {
+        "id":"1.0",
+        "type": "tools-gen-loadRdMacros",
+        "name": "",
+        "file": "",
+        "macros": "TRUE",
+        "outputVar": "loadRdMacros_OUTPUT_VAR",
+        "rcode": "{\"R_Function\":true,\"args\":[],\"name\":\"loadRdMacros\",\"outputVar\":\"loadRdMacros_OUTPUT\"}",
+        "outputs": 1,
+        "inputCount": 1,
+        "noerr": 0,
+        "x":100,
+        "y":100,
+        "wires": [
+            [
+               "1.1"
+            ]
+        ]
+    },
+    {
+    "id":"1.1",
+        "type": "tools-gen-second",
+        "name": "",
+        "file2": "",
+        "macros2": "TRUE",
+        "outputVar": "second_OUTPUT_VAR",
+        "rcode": "{\"R_Function\":true,\"args\":[],\"name\":\"second\",\"outputVar\":\"second_OUTPUT\"}",
+        "outputs": 1,
+        "inputCount": 1,
+        "noerr": 0,
+        "x":200,
+        "y":200
+        "wires": [
+            [
+
+            ]
+        ]
+    }
+]
