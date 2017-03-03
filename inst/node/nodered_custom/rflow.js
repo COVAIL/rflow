@@ -4,10 +4,10 @@ var path = require("path");
 var argv = require('yargs').argv;
 
 var getDirName = path.dirname;
-var replacePeriod = "JS_XX_JS";
+var replacePeriod = "__PERIOD__";
 //var replaceId = "JS_id_JS";
-var replacePrefix = "JS_";
-var replaceSuffix = "_JS";
+var replacePrefix = "__";
+var replaceSuffix = "__";
 var reservedPropertyNames = ["type", "x", "y", "z","outputs", "wires", "id"];
 
 var user_directory = argv.dir || "./";
@@ -321,7 +321,7 @@ function getNodeHTMLTemplate(f){
           outputs:1,
           icon: "`+f.category+`.png",
           label: function() {
-          return this.name||"`+f.category+`-`+RtoJS(f.name)+`";
+          return this.name||"`+f.category+` `+f.name+`";
           },
           oneditprepare: function() {
           var node = this;
