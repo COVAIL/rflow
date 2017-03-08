@@ -1,7 +1,7 @@
+node_modules
 *-gen-nodes/
 .node-red
 .config.json
-node_modules/
 lib
 .flows_*
 flows_*
