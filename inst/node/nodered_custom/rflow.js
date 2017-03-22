@@ -228,7 +228,7 @@ function getNodeHTMLTemplate(f){
           if(idx > 0){
           output += ',';
           }
-          output += '"'+RtoJS(arg.name) + '":"'+((typeof arg.defaultValue == 'string')?arg.defaultValue.split('\"').join('\\\"'):arg.defaultValue)+'"';
+          output += '"'+RtoJS(arg.name) + '":"'+((typeof arg.defaultValue == 'string')?arg.defaultValue.replace(/[\\$'"]/g, "\\$&"):arg.defaultValue)+'"';
         });
 
         output += `
@@ -299,7 +299,7 @@ function getNodeHTMLTemplate(f){
             name: {value:""},
             `;
   f.args.forEach(function(arg, idx){
-    output += "\t\t\t\t"+RtoJS(arg.name)+":{value:\""+((typeof arg.defaultValue == 'string')?arg.defaultValue.split('\"').join('\\\"'):arg.defaultValue)+"\"},\n";
+    output += "\t\t\t\t"+RtoJS(arg.name)+":{value:\""+((typeof arg.defaultValue == 'string')?arg.defaultValue.replace(/[\\$'"]/g, "\\$&"):arg.defaultValue)+"\"},\n";
   });
   output += `   outputVar: {value:"`+f.name+`_OUTPUT_VAR"},
               rcode: {value:makeExpression`+RtoJS(f.name)+`(`
@@ -448,7 +448,7 @@ function getNodeJSTemplate(f){
                   output += ',';
                 }
                 output += `{ "name":"`+arg.name+`",
-                           "value":"`+((arg.defaultValue !="" && typeof arg.defaultValue === 'string')?arg.defaultValue.split('"').join("\\\""):arg.defaultValue)+`" }`
+                           "value":"`+((arg.defaultValue !="" && typeof arg.defaultValue === 'string')?arg.defaultValue.replace(/[\\$'"]/g, "\\$&"):arg.defaultValue)+`" }`
               });
               output += ` ]};
 
