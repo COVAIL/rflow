@@ -15,3 +15,4 @@ NodeRed is an open-source application created with *Javascript* and *NodeJs* tha
 
 We are going to demonstrate a RStudio package, **RFlow**, we have created that allows you to to the following:  1) use NodeRed within a viewer inside of RStudio, 2) generate NodeRed nodes from R package functions, 3) generates code from *R* function node flows, and 4) generates node flows from *R* code (a work in process).  Lastly, we will talk about executing *R* inside *NodeJS* versus code generation in NodeRed and how the package can allow you to do either.
 
+![](rflow.png)
